@@ -1,5 +1,9 @@
 <div align="center">
 
+<p align="center">
+  <img src="docs/assets/hero_banner.jpg" alt="AstroMesh-X Hero Banner" width="100%" style="border-radius: 12px; box-shadow: 0 8px 32px rgba(0, 242, 254, 0.25);" />
+</p>
+
 # 🛰️ ASTROMESH-X
 ### Decentralized Multi-Rover Topological SLAM on Lunar & Planetary Manifolds
 **Fixed 1 KB Wireless Payload • Continuous Riemannian Dynamics (CORD) • Sub-3 cm Accuracy**
@@ -86,6 +90,10 @@ AstroMesh-X features a command-center interface built with deep-space glassmorph
 ---
 
 ## 🔬 System Architecture & DSA Pillars
+
+<p align="center">
+  <img src="docs/assets/mission_badge.jpg" alt="AstroMesh-X Mission Architecture Badge" width="60%" style="border-radius: 16px; box-shadow: 0 8px 32px rgba(0, 242, 254, 0.2);" />
+</p>
 
 ```mermaid
 flowchart TD
