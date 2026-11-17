@@ -1,0 +1,26 @@
+import pandas as pd
+import numpy as np
+
+df = pd.read_csv('benchmark_distributed_trajectory_remediated.csv')
+print("=== REMEDIATED BENCHMARK SUMMARY ===")
+print(f"Total trials: {len(df)}")
+conservation = (df["total_wire_bytes"] == df["data_wire_bytes"] + df["ack_wire_bytes"]).all()
+print(f"Wire byte conservation check: {conservation}")
+print(f"Mean Precision: {df['precision'].mean():.4f}")
+print(f"Mean Recall: {df['recall'].mean():.4f}")
+print(f"Mean F1 Score: {df['f1_score'].mean():.4f}")
+print(f"Mean Initial ATE: {df['initial_ate_rmse'].mean():.4f} m")
+print(f"Mean Final CORD ATE: {df['final_cord_ate_rmse'].mean():.4f} m")
+print(f"Mean ATE Reduction: {df['ate_reduction_pct'].mean():.2f}%")
+print(f"Max ATE Reduction: {df['ate_reduction_pct'].max():.2f}%")
+print(f"True Positives Total: {df['true_positives'].sum()}")
+print(f"False Positives Total: {df['false_positives'].sum()}")
+print(f"True Negatives Total: {df['true_negatives'].sum()}")
+print(f"False Negatives Total: {df['false_negatives'].sum()}")
+print("DSU Components Breakdown:")
+print(df['final_dsu_components'].value_counts())
+print("\nLoss vs ATE Reduction:")
+print(df.groupby('packet_loss_rate')[['initial_ate_rmse', 'final_cord_ate_rmse', 'ate_reduction_pct']].mean())
+print("\nRovers vs ATE Reduction:")
+print(df.groupby('rover_count')[['initial_ate_rmse', 'final_cord_ate_rmse', 'ate_reduction_pct']].mean())
+

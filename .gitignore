@@ -1,5 +1,5 @@
 # Prerequisites / Build output
-build/
+build*/
 bin/
 lib/
 out/
@@ -48,3 +48,10 @@ Thumbs.db
 # Experiment outputs and raw logs (keep scripts, ignore heavy artifacts)
 experiments/data/raw/
 experiments/logs/*.log
+*.csv
+
+# Scratch temporary artifacts
+scratch/*.png
+scratch/*.pdf
+scratch/*.json
+scratch/test*.html

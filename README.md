@@ -61,9 +61,44 @@ ASTRAMESH-X/
 
 ---
 
-## 4. Current Phase: Phase 0 (Bootstrap)
+## 4. Quick Start & Demonstration
 
-- **Phase Status:** Repository bootstrap and persistent memory initialization.
-- **Implementation Status:** No algorithm implementation is included in Phase 0. Toolchain and environment discovery complete; documentation and build structure established.
+### Launch Interactive Mission Control Dashboard
+Start the local command-center web interface:
+```powershell
+python app/server.py
+```
+Open your browser to: [http://127.0.0.1:8765](http://127.0.0.1:8765)
 
-See [PROJECT_STATE.md](docs/PROJECT_STATE.md) for the live state of development.
+### Run Standalone C++ Simulation CLI
+Execute pre-configured demonstration presets directly from the terminal:
+```powershell
+# Demo 1: Basic Multi-Rover SLAM (2 rovers, nominal channel)
+.\build-ucrt64-clean\bin\sim_runner.exe --demo 1 --output-json scratch/demo1.json --output-csv scratch/demo1.csv
+
+# Demo 2: Communication Failure & DTN Recovery (4 rovers, 50% loss, 100 ms delay)
+.\build-ucrt64-clean\bin\sim_runner.exe --demo 2 --output-json scratch/demo2.json --output-csv scratch/demo2.csv
+
+# Demo 3: Multi-Rover Swarm with Multi-Hop Mesh (8 rovers, 20% loss, 50 ms delay)
+.\build-ucrt64-clean\bin\sim_runner.exe --demo 3 --output-json scratch/demo3.json --output-csv scratch/demo3.csv
+```
+
+### Run CTest Regression Suite
+Verify all 66 test targets (100% assertions passing):
+```powershell
+ctest --test-dir build-ucrt64-clean --output-on-failure
+```
+
+---
+
+## 5. Project Status & Documentation Index
+
+- **Phase Status:** Fully Completed & Demonstration-Ready (Release Candidate 1).
+- **Core C++ Libraries:** `astromesh_core`, `astromesh_graph`, `astromesh_verification`, `astromesh_geometry`, `astromesh_optimization`, `astromesh_comms`, `astromesh_orchestration`, `astromesh_simulation`.
+- **Primary Experimental Findings:**
+  - `docs/FINAL_COMPLETION_REPORT.md`: Comprehensive completion report and acceptance matrix.
+  - `docs/DEMO_GUIDE.md`: Demonstration manual and step-by-step operator guide.
+  - `docs/PHASE62_ROBUSTNESS.md`: Packet loss (0-90%) and delay (0-500 ms) sensitivity matrix across 15,380 trials.
+  - `docs/PHASE61_ABLATIONS.md`: Communication subsystem ablation study across 2,100 paired trials.
+  - `docs/PROJECT_STATE.md`: Single source of truth for repository operational state.
+

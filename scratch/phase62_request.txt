@@ -1,0 +1,188 @@
+<USER_REQUEST>
+# AstroMesh-X — Phase 6.2: Packet Loss and Communication Delay Robustness
+
+## Mission
+
+Implement and execute Phase 6.2 as a reproducible robustness study of the existing AstroMesh-X pipeline.
+
+Build on the completed Phase 6.1 benchmark and its audit artifacts. Do not redesign the architecture or optimize the results to match expectations. The objective is to measure how packet loss and communication delay affect delivery, graph connectivity, loop-closure quality, optimization, and total wire cost.
+
+## 1. Inspect before implementation
+
+Read:
+- `docs/PHASE61_ABLATIONS.md`
+- `docs/PHASE61_INDEPENDENT_AUDIT.md`
+- `docs/PROJECT_STATE.md`
+- `docs/ROADMAP.md`
+- `docs/TEST_PLAN.md`
+- `tests/benchmark_phase61_ablations.cpp`
+- The current multi-rover orchestration, network, DTN buffer, ACK, pipeline, and optimization implementations.
+
+Confirm the current interfaces, benchmark conventions, scenario definitions, random-seed behavior, and wire-accounting semantics before designing the new experiment.
+
+Treat previous reports as claims to reproduce, not as proof. Preserve the Phase 6.1 CSVs and all existing benchmark outputs.
+
+## 2. Experimental design
+
+Create a new benchmark executable, preferably `tests/benchmark_phase62_robustness.cpp`, without changing the meaning of existing benchmarks.
+
+Evaluate packet loss at:
+`0%, 10%, 20%, 30%, 40%, 50%, 60%, 70%, 80%, 90%`
+
+Evaluate communication delay at:
+`0 ms, 20 ms, 50 ms, 100 ms, 200 ms, 350 ms, 500 ms`
+
+Use a documented experimental design that covers the complete loss-delay grid for at least the nominal two-rover scenario and the eight-rover swarm scenario. If full coverage of all ten Phase 6.1 scenarios is computationally practical, include them as a separate extended matrix.
+
+Use at least 30 paired deterministic seeds per grid cell for the primary matrix, subject to measured runtime. Do not silently reduce the sample size. If a pilot shows the full experiment is too expensive, report the pilot and estimated runtime first, then implement resumable execution and obtain explicit authorization before reducing the planned sample size.
+
+Use identical scenario inputs and seed-derived landmark, odometry, and channel randomness across paired variants wherever the design requires a paired comparison.
+
+Keep the existing seven Phase 6.1 variants available where practical:
+- AstroMesh_X_Full
+- AstroMesh_X_RawExchange
+- AstroMesh_X_NoACKs
+- AstroMesh_X_NoRetries
+- AstroMesh_X_NoMultiHop
+- AstroMesh_X_Minimal
+- AstroMesh_v1_Baseline
+
+Clearly distinguish a change in channel conditions from a change in architecture.
+
+## 3. Channel model requirements
+
+Inspect the existing network simulator and document what it actually models.
+
+For each run, record:
+- Configured packet-loss probability.
+- Configured one-way propagation delay.
+- Actual realized transmission loss rate.
+- Delay and jitter distributions, if enabled.
+- Data transmissions, ACK transmissions, retransmissions, and forwarding attempts.
+- Retry exhaustion and messages still in flight at termination.
+- Partition duration and reconnection events, if applicable.
+
+Use reproducible random streams. Avoid accidentally reusing one random stream in a way that makes the configured loss rate misleading across variants.
+
+If the simulator cannot model a required condition correctly, fix or clearly scope the model before interpreting results. Do not claim that fixed latency represents real-world radio congestion, interference, or a complete wireless channel.
+
+## 4. Required outcome metrics
+
+Report metrics by scenario, loss rate, delay, variant, and seed wherever applicable.
+
+### Communication
+- Logical messages generated and admitted.
+- Hop transmission attempts, successful hops, drops, retries, and exhausted retries.
+- Unique application messages delivered and duplicate deliveries.
+- Application completion ratio.
+- Per-hop delivery ratio.
+- Payload, protocol, framing, ACK, data-wire, and total-wire bytes.
+- Queue occupancy, queue drops, TTL expiry, and quota rejections if exposed by the implementation.
+
+### Graph and SLAM
+- Final graph component count.
+- Number of candidate, verified, rejected, and ground-truth-false loop closures.
+- Number of successful inter-rover graph merges.
+- Optimizer calls, iterations, failures, and initial/final objective values.
+- Aligned ATE RMSE and relative-pose error, with an explicitly documented alignment procedure.
+- Number of rover pairs that never become connected.
+- Whether each metric is valid, unavailable, or undefined for a given run.
+
+Do not substitute an unchanged initialized trajectory for an optimizer result without making that distinction explicit. If pose-level telemetry is needed to validate ATE, add bounded or optional pose-trace output in separate files; do not overload the main CSV with enormous serialized trajectories.
+
+## 5. Statistical analysis
+
+Use paired comparisons where the experimental design genuinely provides matched inputs.
+
+For each primary metric:
+- Report sample count, mean, standard deviation, and confidence interval.
+- State the exact statistical procedure and multiple-comparison correction.
+- Report effect sizes, not only p-values.
+- Handle zero-variance paired differences explicitly.
+- Distinguish statistical significance from practical significance.
+- Avoid causal conclusions when the experimental design does not isolate the cause.
+
+Predeclare the primary comparisons and primary outcomes before the full sweep. Treat secondary comparisons as exploratory or apply an appropriate correction.
+
+## 6. Benchmark engineering
+
+The benchmark must:
+- Support `--smoke`, `--pilot`, `--full`, and `--seeds N` options.
+- Support resumable execution without duplicating completed `(scenario, loss, delay, seed, variant)` records.
+- Write and flush each completed trial safely.
+- Preserve partial progress if interrupted.
+- Record a schema version, configuration, seed, and benchmark version.
+- Write failures and diagnostics to a separate CSV.
+- Avoid running multiple copies of the same full benchmark simultaneously.
+- Print periodic progress, elapsed time, and a conservative remaining-time estimate.
+- Validate output headers, row widths, key uniqueness, and numeric fields before declaring completion.
+
+Do not delete previous results to make a rerun easier. Write new outputs with Phase 6.2-specific filenames.
+
+## 7. Automated integrity checks
+
+Add tests for:
+- Deterministic results for identical configurations and seeds.
+- Loss and delay settings being applied as configured.
+- Correct handling of delayed, dropped, duplicate, and expired messages.
+- Retry and ACK accounting.
+- Byte conservation.
+- No invalid ratios or nonfinite metrics.
+- Disconnected graph components remaining correctly represented.
+- Optimizer failures being reported rather than hidden.
+- Resume behavior and duplicate-record prevention.
+- Correct handling of zero samples or undefined metrics.
+
+Run the complete CTest suite after implementation and after any corrective source-code changes.
+
+## 8. Documentation
+
+Create:
+- `docs/PHASE62_ROBUSTNESS.md`
+- `tests/benchmark_phase62_robustness.cpp`
+- Relevant unit or integration tests.
+- New raw trial, summary, and failure CSVs with Phase 6.2-specific names.
+- Reproducible statistical analysis scripts under `scratch/`.
+
+Update `docs/BUILD_LOG.md`, `docs/EXPERIMENT_LOG.md`, `docs/PROJECT_STATE.md`, `docs/ROADMAP.md`, and `docs/TEST_PLAN.md` with measured results and the correct milestone status.
+
+Keep measured facts, interpretations, limitations, and proposed future work clearly separated.
+
+## 9. Repository and safety constraints
+
+- Preserve all existing Phase 6.1 artifacts.
+- Do not commit or push.
+- Do not run destructive Git commands.
+- Do not remove existing build directories or user data.
+- Do not claim physical rover validation or a convergence guarantee from synthetic tests.
+- Do not label the milestone complete until the planned matrix, integrity audit, statistical analysis, and regression tests have actually finished.
+
+## 10. Execution sequence
+
+Proceed in this order:
+
+1. Inspect existing code and propose the exact experimental matrix.
+2. Implement the smallest smoke-test configuration.
+3. Build and run smoke tests.
+4. Run a small pilot and estimate full runtime.
+5. Verify pilot CSV integrity and accounting.
+6. Execute the planned full matrix with resumable progress.
+7. Independently audit the completed dataset and recompute statistics.
+8. Run all regression tests.
+9. Produce the final report with completion counts, runtime, findings, discrepancies, limitations, and the recommended next milestone.
+
+Begin with the code inspection and experimental design. Do not start a long full benchmark until the smoke test and pilot are valid.
+</USER_REQUEST>
+<ADDITIONAL_METADATA>
+The current local time is: 2026-10-28T22:55:49+05:30.
+
+The user's current state is as follows:
+Active Document: c:\Users\TANISHKA SAWANT\ASTRAMESH-X\docs\REFERENCES.md (LANGUAGE_UNSPECIFIED)
+Cursor is on line: 1
+Other open documents:
+- c:\Users\TANISHKA SAWANT\ASTRAMESH-X\docs\PHASE53_AUDIT.md (LANGUAGE_UNSPECIFIED)
+- c:\Users\TANISHKA SAWANT\ASTRAMESH-X\benchmark_phase54_pilot_trials_run1.csv (LANGUAGE_UNSPECIFIED)
+- c:\Users\TANISHKA SAWANT\ASTRAMESH-X\benchmark_phase61_pilot_failures.csv (LANGUAGE_UNSPECIFIED)
+- c:\Users\TANISHKA SAWANT\ASTRAMESH-X\tests\benchmark_phase54.cpp (LANGUAGE_UNSPECIFIED)
+- c:\Users\TANISHKA SAWANT\ASTRAMESH-X\benchmark_phase54_pilot_summary_orig.csv (LANGUAGE_UNSPECIFIED)
+</ADDITIONAL_METADATA>
