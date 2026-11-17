@@ -9,6 +9,7 @@
 **Fixed 1 KB Wireless Payload • Continuous Riemannian Dynamics (CORD) • Sub-3 cm Accuracy**
 
 [![C++20](https://img.shields.io/badge/C%2B%2B-20-blue.svg?style=for-the-badge&logo=c%2B%2B)](https://en.wikipedia.org/wiki/C%2B%2B20)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](LICENSE)
 [![CTest](https://img.shields.io/badge/CTest-66%2F66%20PASS%20(100%25)-00e676.svg?style=for-the-badge&logo=cmake)](tests/)
 [![Acceptance](https://img.shields.io/badge/Acceptance-13%2F13%20PASS-00f2fe.svg?style=for-the-badge)](scratch/test_acceptance.py)
 [![Payload](https://img.shields.io/badge/Wire%20Payload-Fixed%201%2C024%20B-ff007f.svg?style=for-the-badge)](#the-breakthrough-metrics)
@@ -38,6 +39,25 @@ Traditional multi-robot SLAM architectures fail in deep-space exploration becaus
 3. **Depend on Centralized Gateways:** Single-point base stations are fatal if damaged or obstructed by crater walls.
 
 **AstroMesh-X introduces a breakthrough paradigm:** By pairing **Invertible Bloom Lookup Tables (IBLT)** for constant-overhead set reconciliation with **Continuous Riemannian Dynamics (CORD)** on the $\mathrm{SE}(2)$ Lie manifold and **Disjoint-Set Union (DSU)** topological graph merging, AstroMesh-X achieves millimeter-grade global consensus over a **strictly bounded 1,024-byte (1 KB) wire transmission**, slashing memory footprint by **78.5%** and trajectory drift by **99.9%**.
+
+---
+
+## 🪐 Mission Operational Scenario
+
+AstroMesh-X is designed around realistic extraterrestrial exploration regimes:
+
+- **Target Operational Theatres:** Lunar South Pole (Shackleton Crater rim and Permanently Shadowed Regions) and subsurface basaltic lava tube skylights (Marius Hills).
+- **Navigation Challenges:**
+  - Complete absence of Global Navigation Satellite Systems (GNSS / GPS-denied).
+  - High wheel-slip on loose regolith slopes, causing dead-reckoning drift of tens of meters.
+- **RF & Channel Constraints:**
+  - Severe line-of-sight signal occlusion by crater ridges and rock formations.
+  - Multi-minute communication partitions and blackouts.
+  - Constrained peer-to-peer transmission budgets ($\le 100\text{ kbps}$).
+- **Autonomous Swarm Coordination:**
+  - Completely decentralized peer-to-peer topology with no single point of failure.
+  - Delay-tolerant message store-and-forward buffering.
+  - Automatic topological reconciliation when inter-rover lines of sight are restored.
 
 ---
 
@@ -277,6 +297,12 @@ The theoretical formulations, mathematical proofs, and empirical findings are do
 
 - **Course / Track:** Advanced Data Structures & Algorithms / Decentralized Autonomous Robotics
 - **Domain:** Distributed Multi-Robot SLAM, Planetary Exploration, Riemannian Optimization
+
+---
+
+## 📄 License
+
+This project is licensed under the terms of the [MIT License](LICENSE).
 
 ---
 
