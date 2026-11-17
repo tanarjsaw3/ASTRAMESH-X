@@ -267,7 +267,6 @@ The theoretical formulations, mathematical proofs, and empirical findings are do
 
 ## 👥 Contributors & Academic Context
 
-- **Author / Developer:** Tanishka Sawant & Project Contributors
 - **Course / Track:** Advanced Data Structures & Algorithms / Decentralized Autonomous Robotics
 - **Domain:** Distributed Multi-Robot SLAM, Planetary Exploration, Riemannian Optimization
 
