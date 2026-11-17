@@ -4,10 +4,11 @@ from docx.enum.text import WD_ALIGN_PARAGRAPH
 from docx.enum.table import WD_TABLE_ALIGNMENT
 from docx.oxml import parse_xml
 from docx.oxml.ns import nsdecls
+import os
 
 doc = docx.Document()
 
-# Page Margins: 1 inch
+# Page Margins: 1.0 inch all around
 for section in doc.sections:
     section.top_margin = Inches(1.0)
     section.bottom_margin = Inches(1.0)
@@ -73,6 +74,15 @@ def add_bullet(text, bold_prefix=None):
     run = p.add_run(text)
     run.font.name = 'Times New Roman'
     run.font.size = Pt(10.5)
+    return p
+
+def add_equation_image(image_path, height_in_inches=0.35):
+    p = doc.add_paragraph()
+    p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    p.paragraph_format.space_before = Pt(6)
+    p.paragraph_format.space_after = Pt(6)
+    run = p.add_run()
+    run.add_picture(image_path, height=Inches(height_in_inches))
     return p
 
 # TITLE BLOCK
@@ -294,8 +304,9 @@ add_body('200 denotes initiating peer discovery over a constrained RF mesh,\n'
          '205 denotes constructing a pairwise consistency graph across candidate landmark associations,\n'
          '206 denotes executing maximum-clique filtering and TEASER++ SE(2) Horn alignment,\n'
          '207 denotes merging topological map components via DSU path compression and union-by-rank,\n'
-         '208 denotes anchoring coordinate frames through decentralized SE(2) gauge fixing, and\n'
-         '209 denotes updating distributed rover poses via Riemannian CORD Lie retraction.')
+         '208 denotes anchoring coordinate frames through decentralized SE(2) gauge fixing, \n'
+         '209 denotes updating distributed rover poses via Riemannian CORD Lie retraction, and\n'
+         '210 denotes strata-estimator fallback partition procedure executed when pure-cell extraction fails.')
 
 add_body('Figure 3 illustrates a worked topological example of two rovers reconnecting after an RF blackout. Whereas,')
 add_body('300 denotes first autonomous rover R1 with established local submap 1,\n'
@@ -309,15 +320,24 @@ add_heading_1('9. Detail description of the invention')
 
 add_heading_2('9.1 Mathematical Data Model and Manifold Representation')
 add_body('In the system of the present invention, each rover i maintains a local pose graph G_i = (V_i, E_i), where vertices V_i represent robot keyframe poses and spatial landmark locations, and edges E_i represent relative geometric constraints derived from odometry or perception. Unlike conventional Euclidean systems, every pose vertex X_k resides on the Special Euclidean Lie group SE(2) = R^2 x SO(2):')
-add_body('X_k = [ R(theta_k)   p_k ]\n'
-         '      [    0           1   ]')
-add_body('where p_k = [x_k, y_k]^T in R^2 denotes planar translation and R(theta_k) in SO(2) denotes the 2x2 rotation matrix defined by orientation angle theta_k. The relative transform between pose X_j and pose X_k is given by Lie group inversion and composition: T_jk = X_j^(-1) * X_k. Tangent vector perturbations xi = [delta_x, delta_y, delta_theta]^T in se(2) are mapped to SE(2) using the exponential map Exp(xi) and retracted back via Log(T).')
+
+add_equation_image('docs/eq1.png', height_in_inches=0.45)
+
+add_body('where p_k = [x_k, y_k]^T in R^2 denotes planar translation and R(theta_k) in SO(2) denotes the 2x2 rotation matrix defined by orientation angle theta_k. The relative transform between pose X_j and pose X_k is given by Lie group inversion and composition:')
+
+add_equation_image('docs/eq2.png', height_in_inches=0.28)
+
+add_body('Tangent vector perturbations xi = [delta_x, delta_y, delta_theta]^T in se(2) are mapped to SE(2) using the exponential map Exp(xi) and retracted back via Log(T).')
 
 add_heading_2('9.2 Invertible Bloom Lookup Table (IBLT) Set Reconciliation (102, Figure 2)')
 add_body('To eliminate the multi-megabyte transmission penalties of traditional SLAM, the landmark keys of each rover are reconciled using an Invertible Bloom Lookup Table (IBLT). An IBLT B of m cells is constructed where each cell c contains three algebraic registers:')
-add_body('c = (count, keySum, hashSum)')
+
+add_equation_image('docs/eq3.png', height_in_inches=0.26)
+
 add_body('where count is an integer counter, keySum is the bitwise XOR sum of all 64-bit landmark keys mapped to cell c, and hashSum is the bitwise XOR sum of secondary hash values. The entire table is dimensioned to fit within a strict 1,024-byte wire payload. When rover i and rover j initiate reconciliation, rover j subtracts its local table B_j from incoming table B_i cell-by-cell:')
-add_body('B_diff = B_i - B_j = (count_i - count_j,  keySum_i XOR keySum_j,  hashSum_i XOR hashSum_j)')
+
+add_equation_image('docs/eq4.png', height_in_inches=0.32)
+
 add_body('Peel-decoding iteratively extracts pure cells (cells where count = +/- 1 and hash(keySum) == hashSum). A positive pure cell reveals a landmark known to rover i but missing from rover j; a negative pure cell reveals a landmark known to rover j but missing from rover i. This extracts the exact symmetric difference A Δ B in O(d) operations, where d is the size of the set difference, using only 1 KB of wireless payload.')
 
 add_heading_2('9.3 Algorithmic Complexity Table')
@@ -366,14 +386,24 @@ for row_idx, data in enumerate(alg_data):
 
 add_heading_2('9.4 Maximum-Clique Geometric Verification (104)')
 add_body('To reject false-positive perceptual aliasing matches in lunar craters, candidate landmark associations are mapped to a Pairwise Consistency Graph G_c = (V_c, E_c). A vertex v in V_c represents a proposed landmark correspondence (l_i, l_j). An edge exists between correspondence u = (l_i1, l_j1) and correspondence v = (l_i2, l_j2) if and only if the Euclidean distance between landmarks is invariant under rigid SE(2) transformation:')
-add_body('| ||p_i1 - p_i2|| - ||p_j1 - p_j2|| | < epsilon_dist')
+
+add_equation_image('docs/eq5.png', height_in_inches=0.32)
+
 add_body('The true set of inlier correspondences forms a Maximum Clique in G_c. Once extracted, closed-form Horn singular value decomposition estimates the relative transformation T_ij = (R_ij, t_ij). If the inlier count fails to exceed a statistical significance threshold, the candidate loop closure is rejected, ensuring 100% precision.')
 
 add_heading_2('9.5 Continuous Riemannian Dynamics (CORD) Optimizer (108)')
 add_body('Distributed pose-graph optimization is governed by Continuous Riemannian Dynamics (CORD). For each relative measurement edge (i, j) with covariance weight Omega_ij, the Riemannian residual r_ij on SE(2) is defined as:')
-add_body('r_ij = Log( T_ij^(-1) * X_i^(-1) * X_j ) in se(2)')
-add_body('The total Riemannian energy function is E(X) = 0.5 * sum_(i,j) ||r_ij||^2_(Omega_ij). Each rover integrates its local pose continuous dynamics along the Riemannian negative gradient:')
-add_body('d(X_i)/dt = -grad_R E(X_i) = Exp( -gamma * sum_(j in N(i)) Ad_(X_i)^T * Omega_ij * r_ij )')
+
+add_equation_image('docs/eq6.png', height_in_inches=0.32)
+
+add_body('The total Riemannian energy function is:')
+
+add_equation_image('docs/eq7.png', height_in_inches=0.38)
+
+add_body('Each rover integrates its local pose continuous dynamics along the Riemannian negative gradient:')
+
+add_equation_image('docs/eq8.png', height_in_inches=0.42)
+
 add_body('where Ad denotes the adjoint representation on SE(2) and gamma is an adaptive step size. By operating on the Riemannian manifold directly, CORD provably converges without rotational wrap-around singularities.')
 
 add_heading_2('9.6 Experimental Validation and Empirical Metrics')
@@ -465,37 +495,37 @@ add_body('A decentralized multi-rover topological Simultaneous Localization and 
 
 doc.add_page_break()
 
-# 15. DRAWINGS
+# 15. DRAWINGS (IPO Rule Compliant: Numbers Only, Standard Margins)
 add_heading_1('15. Drawings')
 
-add_body('Figure 1: Block diagram of the decentralized multi-rover topological SLAM system (AstroMesh-X).', bold_prefix='Figure 1: ')
+add_body('Figure 1', bold_prefix='Figure 1: ')
 p_img1 = doc.add_paragraph()
 p_img1.alignment = WD_ALIGN_PARAGRAPH.CENTER
 p_img1.paragraph_format.space_before = Pt(6)
 p_img1.paragraph_format.space_after = Pt(18)
 run_img1 = p_img1.add_run()
-run_img1.add_picture('docs/patent_fig1.png', width=Inches(5.4))
+run_img1.add_picture('docs/patent_fig1.png', width=Inches(5.0))
 
 doc.add_page_break()
 
-add_body('Figure 2: Procedural flowchart of the constant-overhead set reconciliation and distributed Riemannian optimization method.', bold_prefix='Figure 2: ')
+add_body('Figure 2', bold_prefix='Figure 2: ')
 p_img2 = doc.add_paragraph()
 p_img2.alignment = WD_ALIGN_PARAGRAPH.CENTER
 p_img2.paragraph_format.space_before = Pt(6)
 p_img2.paragraph_format.space_after = Pt(18)
 run_img2 = p_img2.add_run()
-run_img2.add_picture('docs/patent_fig2.png', width=Inches(5.2))
+run_img2.add_picture('docs/patent_fig2.png', width=Inches(4.8))
 
 doc.add_page_break()
 
-add_body('Figure 3: Worked topological example of two rovers reconnecting after an RF blackout, deploying 1 KB IBLT sync and CORD Lie retraction to snap dead-reckoning ghost drift back to ground truth.', bold_prefix='Figure 3: ')
+add_body('Figure 3', bold_prefix='Figure 3: ')
 p_img3 = doc.add_paragraph()
 p_img3.alignment = WD_ALIGN_PARAGRAPH.CENTER
 p_img3.paragraph_format.space_before = Pt(6)
 p_img3.paragraph_format.space_after = Pt(18)
 run_img3 = p_img3.add_run()
-run_img3.add_picture('docs/patent_fig3.png', width=Inches(5.4))
+run_img3.add_picture('docs/patent_fig3.png', width=Inches(5.0))
 
 out_path = 'docs/AstroMesh-X_Patent_Proposal_Draft.docx'
 doc.save(out_path)
-print(f'Successfully generated patent draft document: {out_path}')
+print(f'Successfully generated patent draft document with rendered LaTeX equations and IPO-compliant drawings: {out_path}')
