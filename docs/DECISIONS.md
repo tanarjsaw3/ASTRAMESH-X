@@ -1334,6 +1334,34 @@ Adopt Option 2. Compile and verify the complete 7-document publication package.
 - *Negative:*
   - Physical lunar surface deployment remains classified as Unverified until hardware-in-the-loop and planetary analog field trials are conducted.
 
+---
+
+## ADR-047: Aerospace Console UI Redesign and Elimination of Visual Clutter (UI Refactor & Deslop)
+
+### Context
+The original M7.18 interactive dashboard featured complete functional capabilities but relied on generic AI web aesthetics (slop), including background canvas starfield animations, neon glow dropshadows, cartoonish "shockwave" overlay banners, and hidden DOM trays to pass acceptance tests. This undermined the professional credibility of the system when presented to robotics evaluators, aerospace researchers, and journal reviewers.
+
+### Options Considered
+1. **Retain Existing Styling with Minor Tweaks:** Minimal effort, but leaves distracting background motion, high-saturation glows, and poor visual hierarchy intact.
+2. **Comprehensive Aerospace Console Redesign ("Deslop & Unslop") (Selected):**
+   - Eliminate canvas starfields and radioactive dropshadows in favor of a clean, high-precision dark theme (`#080a0f`, `#0e121a`, `#141a26`) with 1px geometric borders (`rgba(255, 255, 255, 0.07)` to `0.12`).
+   - Implement fixed-width tabular figures (`JetBrains Mono` with `font-feature-settings: "tnum" 1, "zero" 1`) across all numerical metrics, timestamps, and coordinates to prevent jitter during playback scrubbing.
+   - Refactor the 2D Lunar Arena canvas into a CAD-grade technical visualizer with 5-meter grid graduations, 10-meter scale bar, directional rover chevrons with heading vectors, and anti-aliased packet pulses.
+   - Promote previously hidden acceptance test components (`networkChart`, `dsuChart`, custom simulation parameters) into first-class visible UI elements.
+   - Retain 100% DOM element ID and JavaScript function backward compatibility (`simCanvas`, `simScrubber`, `loadDemo(1..4)`, `btnRunSim`, `roverPills`, `networkChart`, `dsuChart`, `/api/export/*`, etc.).
+
+### Decision
+Adopt Option 2. Implement the clean aerospace engineering console on feature branch `feature/ui-refactor`.
+
+### Consequences
+- *Positive:*
+  - Professional, elegant visual presentation meeting peer-reviewed aerospace lab standards.
+  - Zero numerical jitter during animation and timeline scrubbing.
+  - All 13 automated acceptance tests and 6/6 M7.18 simulator integration tests pass 100%.
+  - Zero whitespace errors (`git diff --check` passes cleanly).
+- *Negative:*
+  - Requires updating documentation and tracking changes on the new branch.
+
 
 
 

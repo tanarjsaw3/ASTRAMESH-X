@@ -4,37 +4,52 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AstroMesh-X — Aerospace Swarm SLAM Command Center</title>
-  
-  <!-- Premium Fonts -->
+
+  <!-- Technical Typography -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
-  
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+
   <style>
     :root {
-      --bg-space: #040711;
-      --bg-surface: rgba(10, 16, 30, 0.72);
-      --bg-surface-elevated: rgba(16, 25, 46, 0.85);
-      --border-subtle: rgba(255, 255, 255, 0.08);
-      --border-cyan: rgba(0, 242, 254, 0.35);
-      --border-emerald: rgba(0, 230, 118, 0.4);
-      --border-crimson: rgba(255, 23, 68, 0.45);
-      
-      --cyan: #00f2fe;
-      --cyan-glow: rgba(0, 242, 254, 0.3);
-      --emerald: #00e676;
-      --emerald-glow: rgba(0, 230, 118, 0.3);
-      --crimson: #ff1744;
-      --crimson-glow: rgba(255, 23, 68, 0.35);
-      --amber: #ffab00;
-      --purple: #7c4dff;
-      
-      --text-main: #f8fafc;
-      --text-muted: #94a3b8;
-      --text-dim: #64748b;
-      
-      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      --font-mono: 'JetBrains Mono', monospace;
+      /* Refined Engineering Dark Theme */
+      --bg-base: #080a0f;
+      --bg-surface: #0e121a;
+      --bg-surface-elevated: #141a26;
+      --bg-surface-subtle: #192132;
+
+      --border-subtle: rgba(255, 255, 255, 0.07);
+      --border-medium: rgba(255, 255, 255, 0.12);
+      --border-strong: rgba(255, 255, 255, 0.2);
+
+      /* Semantic Accents */
+      --cyan: #38bdf8;
+      --cyan-muted: rgba(56, 189, 248, 0.12);
+      --cyan-border: rgba(56, 189, 248, 0.35);
+
+      --emerald: #10b981;
+      --emerald-muted: rgba(16, 185, 129, 0.12);
+      --emerald-border: rgba(16, 185, 129, 0.35);
+
+      --amber: #f59e0b;
+      --amber-muted: rgba(245, 158, 11, 0.12);
+      --amber-border: rgba(245, 158, 11, 0.35);
+
+      --crimson: #f43f5e;
+      --crimson-muted: rgba(244, 63, 94, 0.12);
+      --crimson-border: rgba(244, 63, 94, 0.35);
+
+      --purple: #818cf8;
+      --purple-muted: rgba(129, 140, 248, 0.12);
+
+      /* Typography Colors */
+      --text-primary: #f8fafc;
+      --text-secondary: #94a3b8;
+      --text-tertiary: #64748b;
+      --text-disabled: #475569;
+
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --font-mono: 'JetBrains Mono', 'SF Mono', Consolas, monospace;
     }
 
     * {
@@ -44,113 +59,135 @@
     }
 
     body {
-      background-color: var(--bg-space);
-      color: var(--text-main);
+      background-color: var(--bg-base);
+      color: var(--text-primary);
       font-family: var(--font-sans);
-      min-height: 100vh;
-      overflow-x: hidden;
+      height: 100vh;
+      overflow: hidden;
       display: flex;
       flex-direction: column;
-      user-select: none;
-    }
-
-    /* Ambient Drifting Starfield Background */
-    #starfieldCanvas {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      z-index: 0;
-      pointer-events: none;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
     }
 
     /* Master Layout Wrapper */
     .app-viewport {
-      position: relative;
-      z-index: 10;
       display: flex;
       flex-direction: column;
       height: 100vh;
+      width: 100vw;
       overflow: hidden;
+      background: radial-gradient(circle at 50% 0%, #101626 0%, var(--bg-base) 80%);
     }
 
-    /* Top Aerospace Flight HUD */
+    /* Top Command Header */
     header.hud-header {
-      background: rgba(6, 10, 20, 0.85);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
+      background: var(--bg-surface);
       border-bottom: 1px solid var(--border-subtle);
-      padding: 10px 24px;
+      padding: 8px 18px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       flex-shrink: 0;
-      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.7);
+      gap: 16px;
+      z-index: 100;
     }
 
     .brand-section {
       display: flex;
       align-items: center;
-      gap: 14px;
+      gap: 12px;
     }
 
     .brand-logo-badge {
-      width: 38px;
-      height: 38px;
-      border-radius: 10px;
-      background: linear-gradient(135deg, rgba(0, 242, 254, 0.25), rgba(124, 77, 255, 0.3));
-      border: 1px solid var(--border-cyan);
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+      background: var(--bg-surface-elevated);
+      border: 1px solid var(--border-medium);
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 0 16px var(--cyan-glow);
+      cursor: pointer;
+      transition: all 0.15s ease;
+      flex-shrink: 0;
+    }
+
+    .brand-logo-badge:hover {
+      border-color: var(--cyan);
+      background: var(--bg-surface-subtle);
     }
 
     .brand-logo-badge svg {
-      width: 22px;
-      height: 22px;
-      color: var(--cyan);
+      width: 20px;
+      height: 20px;
     }
 
-    .brand-text h1 {
-      font-size: 1.12rem;
-      font-weight: 800;
-      letter-spacing: -0.01em;
+    .brand-text {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .brand-title-row {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
+    }
+
+    .brand-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      color: var(--text-primary);
     }
 
     .mission-pill {
       font-size: 0.65rem;
       font-family: var(--font-mono);
-      font-weight: 700;
-      padding: 3px 8px;
-      border-radius: 20px;
-      background: rgba(0, 242, 254, 0.12);
+      font-weight: 600;
+      padding: 2px 7px;
+      border-radius: 4px;
+      background: var(--cyan-muted);
       color: var(--cyan);
-      border: 1px solid rgba(0, 242, 254, 0.35);
+      border: 1px solid var(--cyan-border);
       text-transform: uppercase;
-      letter-spacing: 0.05em;
+      letter-spacing: 0.04em;
+      cursor: default;
+    }
+
+    .btn-pill {
+      cursor: pointer;
+      background: transparent;
+      border: 1px solid var(--border-medium);
+      color: var(--text-secondary);
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      font-weight: 600;
+      padding: 2px 7px;
+      border-radius: 4px;
+      transition: all 0.15s ease;
+    }
+
+    .btn-pill:hover {
+      border-color: var(--cyan);
+      color: var(--cyan);
+      background: var(--cyan-muted);
     }
 
     .brand-subtitle {
       font-size: 0.72rem;
-      color: var(--text-muted);
-      margin-top: 1px;
+      color: var(--text-tertiary);
     }
 
     /* Central Comparative Accuracy HUD */
     .accuracy-hud {
       display: flex;
       align-items: center;
-      gap: 14px;
-      background: rgba(4, 8, 18, 0.75);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 12px;
-      padding: 6px 18px;
-      box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.08);
+      gap: 16px;
+      background: var(--bg-surface-elevated);
+      border: 1px solid var(--border-subtle);
+      border-radius: 6px;
+      padding: 5px 14px;
     }
 
     .accuracy-item {
@@ -160,286 +197,390 @@
     }
 
     .accuracy-label {
-      font-size: 0.62rem;
+      font-size: 0.6rem;
       font-family: var(--font-mono);
       text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: var(--text-dim);
+      letter-spacing: 0.05em;
+      color: var(--text-tertiary);
     }
 
     .accuracy-val {
       font-family: var(--font-mono);
-      font-weight: 800;
-      font-size: 1.05rem;
+      font-variant-numeric: tabular-nums;
+      font-weight: 700;
+      font-size: 0.92rem;
       line-height: 1.2;
     }
 
     .accuracy-arrow {
-      color: var(--text-dim);
-      font-size: 1.1rem;
-      animation: pulseArrow 2s infinite ease-in-out;
-    }
-
-    @keyframes pulseArrow {
-      0%, 100% { opacity: 0.4; transform: translateX(0); }
-      50% { opacity: 1; transform: translateX(3px); }
+      color: var(--text-tertiary);
+      font-size: 0.9rem;
     }
 
     .accuracy-gain-badge {
-      font-size: 0.7rem;
+      font-size: 0.68rem;
       font-family: var(--font-mono);
-      font-weight: 800;
-      background: rgba(0, 230, 118, 0.15);
+      font-weight: 700;
+      background: var(--emerald-muted);
       color: var(--emerald);
-      border: 1px solid rgba(0, 230, 118, 0.4);
+      border: 1px solid var(--emerald-border);
       padding: 3px 8px;
-      border-radius: 6px;
-      box-shadow: 0 0 12px var(--emerald-glow);
+      border-radius: 4px;
+      letter-spacing: 0.02em;
     }
 
     /* Top Action Bar */
     .hud-actions {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
     }
 
     .glass-btn {
-      background: rgba(16, 25, 46, 0.8);
-      border: 1px solid var(--border-subtle);
-      color: var(--text-main);
-      padding: 7px 14px;
-      border-radius: 8px;
-      font-size: 0.78rem;
+      background: var(--bg-surface-elevated);
+      border: 1px solid var(--border-medium);
+      color: var(--text-secondary);
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 0.75rem;
       font-weight: 600;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
-      gap: 7px;
-      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      gap: 6px;
+      transition: all 0.15s ease;
       text-decoration: none;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
     }
 
     .glass-btn:hover {
-      background: rgba(26, 40, 72, 0.9);
-      border-color: var(--border-cyan);
-      color: var(--cyan);
-      transform: translateY(-1px);
-      box-shadow: 0 4px 14px var(--cyan-glow);
+      background: var(--bg-surface-subtle);
+      border-color: var(--border-strong);
+      color: var(--text-primary);
     }
 
     .glass-btn-primary {
-      background: linear-gradient(135deg, rgba(0, 242, 254, 0.25), rgba(124, 77, 255, 0.35));
-      border-color: rgba(0, 242, 254, 0.45);
-      color: #ffffff;
+      background: var(--cyan-muted);
+      border-color: var(--cyan-border);
+      color: var(--cyan);
     }
 
     .glass-btn-primary:hover {
-      background: linear-gradient(135deg, rgba(0, 242, 254, 0.4), rgba(124, 77, 255, 0.5));
-      box-shadow: 0 0 20px rgba(0, 242, 254, 0.4);
+      background: rgba(56, 189, 248, 0.2);
+      border-color: var(--cyan);
+      color: #ffffff;
     }
 
     /* Main Operational Command View */
     .command-stage {
       display: grid;
-      grid-template-columns: 310px 1fr 340px;
-      gap: 14px;
-      padding: 14px;
+      grid-template-columns: 320px 1fr 340px;
+      gap: 12px;
+      padding: 12px;
       flex: 1;
       min-height: 0;
     }
 
-    /* Frosted Glass Panels */
+    /* Clean Geometric Panels */
     .glass-panel {
       background: var(--bg-surface);
-      backdrop-filter: blur(24px);
-      -webkit-backdrop-filter: blur(24px);
       border: 1px solid var(--border-subtle);
-      border-radius: 14px;
-      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
+      border-radius: 8px;
       display: flex;
       flex-direction: column;
       overflow: hidden;
-      transition: border-color 0.25s ease;
-    }
-
-    .glass-panel:hover {
-      border-color: rgba(255, 255, 255, 0.14);
+      min-height: 0;
     }
 
     .panel-header {
-      padding: 12px 16px;
+      padding: 10px 14px;
       border-bottom: 1px solid var(--border-subtle);
       display: flex;
       justify-content: space-between;
       align-items: center;
-      background: rgba(4, 8, 18, 0.35);
+      background: rgba(255, 255, 255, 0.015);
+      flex-shrink: 0;
     }
 
     .panel-title {
-      font-size: 0.8rem;
+      font-size: 0.75rem;
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.06em;
-      color: var(--text-main);
+      color: var(--text-secondary);
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 7px;
     }
 
     .panel-tag {
       font-family: var(--font-mono);
       font-size: 0.65rem;
-      color: var(--cyan);
-      background: rgba(0, 242, 254, 0.1);
+      font-weight: 600;
+      color: var(--text-tertiary);
+      background: var(--bg-surface-elevated);
       padding: 2px 6px;
-      border-radius: 4px;
-      border: 1px solid rgba(0, 242, 254, 0.25);
+      border-radius: 3px;
+      border: 1px solid var(--border-subtle);
     }
 
     .panel-content {
-      padding: 14px;
+      padding: 12px;
       overflow-y: auto;
       flex: 1;
       display: flex;
       flex-direction: column;
-      gap: 14px;
+      gap: 12px;
     }
 
     /* Custom Scrollbars */
     ::-webkit-scrollbar {
-      width: 5px;
-      height: 5px;
+      width: 4px;
+      height: 4px;
     }
     ::-webkit-scrollbar-track {
-      background: rgba(0, 0, 0, 0.2);
+      background: transparent;
     }
     ::-webkit-scrollbar-thumb {
-      background: rgba(255, 255, 255, 0.15);
-      border-radius: 4px;
+      background: var(--border-medium);
+      border-radius: 2px;
     }
     ::-webkit-scrollbar-thumb:hover {
-      background: var(--cyan);
+      background: var(--text-tertiary);
     }
 
     /* Mission Scenario Cards */
     .mission-card {
-      background: rgba(14, 22, 40, 0.6);
+      background: var(--bg-surface-elevated);
       border: 1px solid var(--border-subtle);
-      border-radius: 10px;
-      padding: 10px 12px;
+      border-radius: 6px;
+      padding: 8px 10px;
       cursor: pointer;
-      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      transition: all 0.15s ease;
       text-align: left;
       width: 100%;
+      color: inherit;
     }
 
     .mission-card:hover {
-      background: rgba(20, 32, 60, 0.8);
-      border-color: var(--border-cyan);
-      transform: translateX(3px);
-      box-shadow: 0 4px 16px rgba(0, 242, 254, 0.15);
+      border-color: var(--border-medium);
+      background: var(--bg-surface-subtle);
     }
 
     .mission-card.active {
-      background: linear-gradient(135deg, rgba(0, 242, 254, 0.15), rgba(124, 77, 255, 0.15));
-      border-color: var(--cyan);
-      box-shadow: 0 0 14px var(--cyan-glow);
+      background: var(--cyan-muted);
+      border-color: var(--cyan-border);
     }
 
     .mission-card-title {
-      font-size: 0.8rem;
-      font-weight: 700;
-      color: #ffffff;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--text-primary);
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
 
     .mission-card-desc {
-      font-size: 0.7rem;
-      color: var(--text-muted);
-      margin-top: 4px;
-      line-height: 1.4;
+      font-size: 0.68rem;
+      color: var(--text-secondary);
+      margin-top: 3px;
+      line-height: 1.35;
     }
 
     /* Fault Injection Terminal Panel */
     .fault-terminal {
-      background: rgba(6, 10, 20, 0.7);
-      border: 1px solid rgba(255, 23, 68, 0.25);
-      border-radius: 10px;
-      padding: 12px;
+      background: var(--bg-surface-elevated);
+      border: 1px solid var(--border-subtle);
+      border-radius: 6px;
+      padding: 10px;
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 8px;
+    }
+
+    .fault-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
 
     .fault-label {
-      font-size: 0.72rem;
-      font-weight: 800;
+      font-size: 0.68rem;
+      font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.05em;
-      color: var(--crimson);
+      color: var(--text-secondary);
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 5px;
+    }
+
+    .fault-status-pill {
+      font-size: 0.62rem;
+      font-family: var(--font-mono);
+      font-weight: 600;
+      padding: 1px 6px;
+      border-radius: 3px;
+    }
+
+    .fault-buttons-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
     }
 
     .btn-sever {
-      background: rgba(255, 23, 68, 0.15);
-      border: 1px solid rgba(255, 23, 68, 0.4);
-      color: #ff6b81;
-      padding: 8px 12px;
-      border-radius: 8px;
-      font-size: 0.76rem;
-      font-weight: 700;
+      background: var(--crimson-muted);
+      border: 1px solid var(--crimson-border);
+      color: #fda4af;
+      padding: 7px 10px;
+      border-radius: 5px;
+      font-size: 0.72rem;
+      font-weight: 600;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 6px;
-      transition: all 0.2s;
+      gap: 5px;
+      transition: all 0.15s ease;
     }
 
     .btn-sever:hover {
-      background: rgba(255, 23, 68, 0.3);
+      background: rgba(244, 63, 94, 0.25);
       color: #ffffff;
-      box-shadow: 0 0 16px var(--crimson-glow);
+      border-color: var(--crimson);
     }
 
     .btn-heal {
-      background: linear-gradient(135deg, rgba(0, 242, 254, 0.2), rgba(0, 230, 118, 0.2));
-      border: 1px solid rgba(0, 230, 118, 0.45);
-      color: #69f0ae;
-      padding: 9px 12px;
-      border-radius: 8px;
-      font-size: 0.78rem;
-      font-weight: 800;
+      background: var(--emerald-muted);
+      border: 1px solid var(--emerald-border);
+      color: #6ee7b7;
+      padding: 7px 10px;
+      border-radius: 5px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      transition: all 0.15s ease;
+    }
+
+    .btn-heal:hover {
+      background: rgba(16, 185, 129, 0.25);
+      color: #ffffff;
+      border-color: var(--emerald);
+    }
+
+    /* Custom Simulation & Network Controls */
+    .custom-sim-box {
+      background: var(--bg-surface-elevated);
+      border: 1px solid var(--border-subtle);
+      border-radius: 6px;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .sim-param-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.7rem;
+      color: var(--text-secondary);
+    }
+
+    .sim-input {
+      background: var(--bg-base);
+      border: 1px solid var(--border-medium);
+      color: var(--text-primary);
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      padding: 3px 6px;
+      border-radius: 4px;
+      width: 60px;
+      text-align: right;
+    }
+
+    .sim-input:focus {
+      outline: none;
+      border-color: var(--cyan);
+    }
+
+    .btn-run-sim {
+      background: var(--bg-surface-subtle);
+      border: 1px solid var(--border-strong);
+      color: var(--text-primary);
+      padding: 6px 10px;
+      border-radius: 5px;
+      font-size: 0.72rem;
+      font-weight: 600;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 6px;
-      transition: all 0.2s;
+      transition: all 0.15s ease;
+      width: 100%;
     }
 
-    .btn-heal:hover {
-      background: linear-gradient(135deg, rgba(0, 242, 254, 0.35), rgba(0, 230, 118, 0.35));
-      color: #ffffff;
-      box-shadow: 0 0 20px var(--emerald-glow);
+    .btn-run-sim:hover {
+      background: var(--cyan-muted);
+      border-color: var(--cyan-border);
+      color: var(--cyan);
+    }
+
+    /* Mini Live Charts Container */
+    .charts-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .mini-chart-card {
+      background: var(--bg-base);
+      border: 1px solid var(--border-subtle);
+      border-radius: 5px;
+      padding: 6px 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .mini-chart-title {
+      font-size: 0.62rem;
+      font-family: var(--font-mono);
+      text-transform: uppercase;
+      color: var(--text-tertiary);
+    }
+
+    .mini-chart-canvas {
+      width: 100%;
+      height: 38px;
+      display: block;
+    }
+
+    .scoping-note {
+      font-size: 0.62rem;
+      color: var(--text-tertiary);
+      line-height: 1.35;
+      font-family: var(--font-mono);
+      border-top: 1px solid var(--border-subtle);
+      padding-top: 6px;
     }
 
     /* Centre Stage Canvas Arena */
     .arena-container {
       position: relative;
-      background: radial-gradient(circle at 50% 50%, rgba(12, 20, 38, 0.7) 0%, rgba(4, 7, 17, 0.95) 100%);
-      border-radius: 14px;
+      background: #06090e;
+      border-radius: 8px;
       border: 1px solid var(--border-subtle);
-      box-shadow: inset 0 0 50px rgba(0, 0, 0, 0.8), 0 20px 50px rgba(0, 0, 0, 0.7);
       display: flex;
       flex-direction: column;
       overflow: hidden;
+      min-height: 0;
     }
 
     #simCanvas {
@@ -449,124 +590,118 @@
       cursor: crosshair;
     }
 
-    /* In-Arena Floating Telemetry Overlays */
+    /* In-Arena Overlays */
     .arena-overlay-top {
       position: absolute;
-      top: 14px;
-      left: 16px;
+      top: 10px;
+      left: 12px;
       display: flex;
-      gap: 10px;
+      gap: 8px;
       pointer-events: none;
+      z-index: 10;
     }
 
     .arena-badge {
-      background: rgba(6, 10, 22, 0.8);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border: 1px solid var(--border-subtle);
-      border-radius: 8px;
-      padding: 5px 10px;
+      background: rgba(14, 18, 26, 0.85);
+      border: 1px solid var(--border-medium);
+      border-radius: 4px;
+      padding: 4px 8px;
       font-family: var(--font-mono);
-      font-size: 0.7rem;
-      color: var(--text-muted);
+      font-size: 0.65rem;
+      color: var(--text-secondary);
       display: flex;
       align-items: center;
-      gap: 6px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+      gap: 5px;
+      backdrop-filter: blur(8px);
     }
 
     .arena-badge b {
-      color: var(--cyan);
+      color: var(--text-primary);
     }
 
     .arena-overlay-legend {
       position: absolute;
-      bottom: 64px;
-      left: 16px;
-      background: rgba(6, 10, 22, 0.8);
-      backdrop-filter: blur(12px);
+      bottom: 52px;
+      left: 12px;
+      background: rgba(14, 18, 26, 0.85);
       border: 1px solid var(--border-subtle);
-      border-radius: 8px;
-      padding: 6px 12px;
-      font-size: 0.68rem;
+      border-radius: 4px;
+      padding: 4px 10px;
+      font-size: 0.65rem;
       font-family: var(--font-mono);
       display: flex;
-      gap: 14px;
+      gap: 12px;
       pointer-events: none;
+      backdrop-filter: blur(8px);
     }
 
     .legend-item {
       display: flex;
       align-items: center;
-      gap: 6px;
-      color: var(--text-muted);
+      gap: 5px;
+      color: var(--text-secondary);
     }
 
     .legend-dot {
-      width: 8px;
-      height: 8px;
+      width: 6px;
+      height: 6px;
       border-radius: 50%;
     }
 
-    /* Floating Shockwave Banner */
-    #shockwaveBanner {
+    /* Tasteful Toast Notification */
+    #statusToast {
       position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%) scale(0.9);
-      background: rgba(4, 12, 28, 0.9);
-      backdrop-filter: blur(16px);
-      border: 1px solid var(--cyan);
-      box-shadow: 0 0 35px var(--cyan-glow);
-      border-radius: 12px;
-      padding: 12px 24px;
+      top: 12px;
+      right: 12px;
+      background: var(--bg-surface-elevated);
+      border: 1px solid var(--cyan-border);
+      border-radius: 6px;
+      padding: 6px 12px;
       display: none;
       align-items: center;
-      gap: 12px;
+      gap: 8px;
       font-family: var(--font-mono);
-      font-size: 0.82rem;
-      font-weight: 700;
-      color: #ffffff;
+      font-size: 0.72rem;
+      color: var(--text-primary);
       pointer-events: none;
-      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      z-index: 20;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.5);
     }
 
     /* Bottom Arena Timeline Playback Controller */
     .arena-playback-bar {
       position: absolute;
-      bottom: 12px;
-      left: 14px;
-      right: 14px;
-      background: rgba(8, 14, 28, 0.85);
-      backdrop-filter: blur(16px);
-      border: 1px solid var(--border-subtle);
-      border-radius: 10px;
-      padding: 8px 16px;
+      bottom: 10px;
+      left: 12px;
+      right: 12px;
+      background: rgba(14, 18, 26, 0.92);
+      border: 1px solid var(--border-medium);
+      border-radius: 6px;
+      padding: 6px 12px;
       display: flex;
       align-items: center;
-      gap: 14px;
-      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+      gap: 12px;
+      backdrop-filter: blur(12px);
+      z-index: 10;
     }
 
     .play-btn {
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
+      width: 28px;
+      height: 28px;
+      border-radius: 4px;
       background: var(--cyan);
       border: none;
-      color: #040711;
+      color: var(--bg-base);
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      transition: all 0.2s;
+      transition: all 0.15s ease;
       flex-shrink: 0;
-      box-shadow: 0 0 12px var(--cyan-glow);
     }
 
     .play-btn:hover {
-      transform: scale(1.08);
-      box-shadow: 0 0 18px var(--cyan);
+      background: #7dd3fc;
     }
 
     .timeline-slider-wrap {
@@ -580,9 +715,9 @@
       flex: 1;
       -webkit-appearance: none;
       appearance: none;
-      height: 5px;
-      border-radius: 4px;
-      background: rgba(255, 255, 255, 0.15);
+      height: 4px;
+      border-radius: 2px;
+      background: var(--border-strong);
       outline: none;
       cursor: pointer;
     }
@@ -590,35 +725,35 @@
     .timeline-slider::-webkit-slider-thumb {
       -webkit-appearance: none;
       appearance: none;
-      width: 14px;
-      height: 14px;
+      width: 12px;
+      height: 12px;
       border-radius: 50%;
       background: var(--cyan);
       cursor: pointer;
-      box-shadow: 0 0 10px var(--cyan);
       transition: transform 0.1s;
     }
 
     .timeline-slider::-webkit-slider-thumb:hover {
-      transform: scale(1.3);
+      transform: scale(1.25);
     }
 
     .timeline-timestamp {
       font-family: var(--font-mono);
-      font-size: 0.75rem;
-      color: var(--text-muted);
-      width: 70px;
+      font-variant-numeric: tabular-nums;
+      font-size: 0.72rem;
+      color: var(--text-secondary);
+      width: 75px;
       text-align: right;
     }
 
     .speed-selector {
-      background: rgba(14, 22, 40, 0.8);
-      border: 1px solid var(--border-subtle);
-      color: var(--text-main);
+      background: var(--bg-base);
+      border: 1px solid var(--border-medium);
+      color: var(--text-primary);
       font-family: var(--font-mono);
-      font-size: 0.72rem;
-      padding: 4px 8px;
-      border-radius: 6px;
+      font-size: 0.7rem;
+      padding: 3px 6px;
+      border-radius: 4px;
       outline: none;
       cursor: pointer;
     }
@@ -627,114 +762,134 @@
     .metric-hero-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 10px;
+      gap: 8px;
     }
 
     .metric-card {
-      background: rgba(8, 14, 28, 0.7);
+      background: var(--bg-surface-elevated);
       border: 1px solid var(--border-subtle);
-      border-radius: 10px;
-      padding: 10px 12px;
+      border-radius: 6px;
+      padding: 8px 10px;
       display: flex;
       flex-direction: column;
-      transition: all 0.2s;
-    }
-
-    .metric-card:hover {
-      border-color: rgba(255, 255, 255, 0.15);
-      background: rgba(14, 22, 42, 0.8);
     }
 
     .metric-card-title {
-      font-size: 0.65rem;
+      font-size: 0.62rem;
       font-family: var(--font-mono);
       text-transform: uppercase;
-      letter-spacing: 0.06em;
-      color: var(--text-dim);
+      letter-spacing: 0.05em;
+      color: var(--text-tertiary);
     }
 
     .metric-card-val {
       font-family: var(--font-mono);
-      font-size: 1.15rem;
-      font-weight: 800;
-      margin-top: 3px;
+      font-variant-numeric: tabular-nums;
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin-top: 2px;
       line-height: 1.2;
     }
 
     /* Rover Pills Selector */
     .rover-pills-row {
       display: flex;
-      gap: 6px;
+      gap: 5px;
       flex-wrap: wrap;
     }
 
     .rover-pill-btn {
       font-family: var(--font-mono);
-      font-size: 0.72rem;
-      font-weight: 700;
-      padding: 4px 10px;
-      border-radius: 6px;
-      background: rgba(14, 22, 40, 0.7);
+      font-size: 0.7rem;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 4px;
+      background: var(--bg-surface-elevated);
       border: 1px solid var(--border-subtle);
-      color: var(--text-muted);
+      color: var(--text-secondary);
       cursor: pointer;
-      transition: all 0.2s;
+      transition: all 0.15s ease;
     }
 
     .rover-pill-btn:hover {
-      border-color: var(--border-cyan);
-      color: #ffffff;
+      border-color: var(--border-strong);
+      color: var(--text-primary);
     }
 
     .rover-pill-btn.active {
-      background: rgba(0, 242, 254, 0.2);
-      border-color: var(--cyan);
-      color: #ffffff;
-      box-shadow: 0 0 10px var(--cyan-glow);
+      background: var(--cyan-muted);
+      border-color: var(--cyan-border);
+      color: var(--cyan);
     }
 
     /* Rover Inspector Specs Table */
     .specs-table {
       width: 100%;
       border-collapse: collapse;
-      font-size: 0.75rem;
+      font-size: 0.72rem;
     }
 
     .specs-table td {
       padding: 4px 0;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+      border-bottom: 1px solid var(--border-subtle);
     }
 
     .specs-table td:first-child {
-      color: var(--text-dim);
+      color: var(--text-tertiary);
       font-family: var(--font-sans);
     }
 
     .specs-table td:last-child {
-      color: var(--text-main);
+      color: var(--text-primary);
       font-family: var(--font-mono);
+      font-variant-numeric: tabular-nums;
       text-align: right;
     }
 
     /* Monospace Live Telemetry Terminal */
     .event-terminal {
-      background: #02040a;
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 8px;
-      padding: 10px;
+      background: #05070b;
+      border: 1px solid var(--border-subtle);
+      border-radius: 6px;
+      padding: 8px 10px;
       font-family: var(--font-mono);
-      font-size: 0.7rem;
+      font-size: 0.68rem;
       color: var(--cyan);
-      height: 140px;
+      height: 130px;
       overflow-y: auto;
       white-space: pre-wrap;
       line-height: 1.4;
-      box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.8);
     }
 
-    /* Hidden DOM anchors to satisfy 100% acceptance test suites */
-    .acceptance-anchor-tray {
-      display: none;
+    /* Export Actions Strip */
+    .export-strip {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+      justify-content: space-between;
+      border-top: 1px solid var(--border-subtle);
+      padding-top: 10px;
+    }
+
+    .export-link {
+      font-size: 0.68rem;
+      font-family: var(--font-mono);
+      color: var(--text-secondary);
+      text-decoration: none;
+      padding: 3px 6px;
+      border-radius: 4px;
+      border: 1px solid var(--border-subtle);
+      background: var(--bg-surface-elevated);
+      transition: all 0.15s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .export-link:hover {
+      color: var(--text-primary);
+      border-color: var(--border-strong);
+      background: var(--bg-surface-subtle);
     }
 
     /* Modal Backdrop */
@@ -744,9 +899,8 @@
       left: 0;
       width: 100vw;
       height: 100vh;
-      background: rgba(2, 5, 12, 0.92);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
+      background: rgba(5, 7, 12, 0.85);
+      backdrop-filter: blur(8px);
       z-index: 2000;
       display: none;
       align-items: center;
@@ -755,78 +909,56 @@
     }
 
     .modal-window {
-      background: rgba(10, 16, 32, 0.95);
-      border: 1px solid var(--border-cyan);
-      border-radius: 16px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-medium);
+      border-radius: 8px;
       width: 100%;
-      max-width: 900px;
+      max-width: 820px;
       max-height: 85vh;
       overflow-y: auto;
-      box-shadow: 0 24px 70px rgba(0, 0, 0, 0.9), 0 0 40px var(--cyan-glow);
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
       display: flex;
       flex-direction: column;
     }
 
     .modal-header {
-      padding: 18px 24px;
+      padding: 14px 18px;
       border-bottom: 1px solid var(--border-subtle);
       display: flex;
       justify-content: space-between;
       align-items: center;
-      background: rgba(4, 8, 18, 0.6);
+      background: var(--bg-surface-elevated);
     }
 
     .modal-body {
-      padding: 24px;
+      padding: 18px;
       display: flex;
       flex-direction: column;
-      gap: 16px;
+      gap: 14px;
     }
   </style>
 </head>
 <body>
 
-  <!-- Background Starfield -->
-  <canvas id="starfieldCanvas"></canvas>
-
   <div class="app-viewport">
-    
-    <!-- Top Aerospace HUD Header -->
+
+    <!-- Top Command HUD Header -->
     <header class="hud-header">
       <div class="brand-section">
-        <div class="brand-logo-badge" onclick="openPatchModal()" title="Click to view full Mission Insignia" style="cursor: pointer; width: 42px; height: 42px; border-radius: 10px; background: rgba(4, 11, 28, 0.85); border: 1.5px solid var(--cyan); box-shadow: 0 0 16px rgba(0, 242, 254, 0.35); display: flex; align-items: center; justify-content: center; padding: 4px; transition: all 0.2s;">
-          <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" style="width: 100%; height: 100%;">
-            <defs>
-              <linearGradient id="navOrbitGlow" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stop-color="#00f2fe" />
-                <stop offset="50%" stop-color="#7928ca" />
-                <stop offset="100%" stop-color="#00e676" />
-              </linearGradient>
-            </defs>
-            <!-- Lunar surface curve -->
-            <path d="M 3 28 C 12 23 24 23 33 28" stroke="rgba(255,255,255,0.25)" stroke-width="1.2" stroke-linecap="round" fill="none" />
-            <!-- Orbit swoop -->
-            <ellipse cx="18" cy="16" rx="14" ry="7" stroke="url(#navOrbitGlow)" stroke-width="1.3" stroke-dasharray="2.5 1.5" transform="rotate(-26 18 16)" fill="none" opacity="0.9" />
-            <!-- Mesh links -->
-            <line x1="9" y1="22" x2="18" y2="12" stroke="#00f2fe" stroke-width="1.3" stroke-linecap="round" opacity="0.95" />
-            <line x1="18" y1="12" x2="27" y2="22" stroke="#00f2fe" stroke-width="1.3" stroke-linecap="round" opacity="0.95" />
-            <line x1="9" y1="22" x2="27" y2="22" stroke="#00e676" stroke-width="1.1" stroke-dasharray="2 1.5" opacity="0.8" />
-            <!-- Swarm Rover Nodes -->
-            <circle cx="9" cy="22" r="2.8" fill="#040711" stroke="#00f2fe" stroke-width="1.4" />
-            <circle cx="9" cy="22" r="1.1" fill="#00f2fe" />
-            <circle cx="18" cy="12" r="3.2" fill="#040711" stroke="#00e676" stroke-width="1.6" />
-            <circle cx="18" cy="12" r="1.3" fill="#00e676" />
-            <circle cx="27" cy="22" r="2.8" fill="#040711" stroke="#00f2fe" stroke-width="1.4" />
-            <circle cx="27" cy="22" r="1.1" fill="#00f2fe" />
+        <div class="brand-logo-badge" onclick="openPatchModal()" title="View Mission Insignia">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="12 2 2 7 12 12 22 7 12 2" stroke="var(--cyan)"></polygon>
+            <polyline points="2 17 12 22 22 17" stroke="var(--emerald)"></polyline>
+            <polyline points="2 12 12 17 22 12" stroke="var(--purple)"></polyline>
           </svg>
         </div>
         <div class="brand-text">
-          <h1>
-            AstroMesh-X
-            <span class="mission-pill">Planetary Swarm SLAM</span>
-            <button class="mission-pill" onclick="openPatchModal()" style="cursor: pointer; background: rgba(0, 242, 254, 0.12); border: 1px solid var(--border-cyan); color: var(--cyan); margin-left: 6px; font-weight: 700; transition: all 0.2s;" title="Click to view full uncropped Mission Insignia">🎖️ Mission Patch</button>
-          </h1>
-          <div class="brand-subtitle">Autonomous Decentralized Pose-Graph Optimization & Delay-Tolerant Mesh</div>
+          <div class="brand-title-row">
+            <h1 class="brand-title">AstroMesh-X</h1>
+            <span class="mission-pill">Decentralized Swarm SLAM</span>
+            <button class="btn-pill" onclick="openPatchModal()">Insignia</button>
+          </div>
+          <div class="brand-subtitle">Planetary Multi-Robot Mesh Telemetry & Lie-Riemannian Graph Optimization</div>
         </div>
       </div>
 
@@ -839,7 +971,7 @@
         <div class="accuracy-arrow">⟶</div>
         <div class="accuracy-item">
           <span class="accuracy-label">AstroMesh-X ATE</span>
-          <span class="accuracy-val" style="color: var(--emerald);">0.028 m <span style="font-size: 0.72rem; color: var(--text-muted);">(2.8 cm)</span></span>
+          <span class="accuracy-val" style="color: var(--emerald);">0.028 m <span style="font-size: 0.68rem; color: var(--text-tertiary);">(2.8 cm)</span></span>
         </div>
         <div class="accuracy-gain-badge">−99.9% Error Cut</div>
       </div>
@@ -847,125 +979,168 @@
       <!-- Action Buttons -->
       <div class="hud-actions">
         <button class="glass-btn glass-btn-primary" onclick="openBriefingModal()">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
           Mission Briefing
         </button>
-        <button class="glass-btn" style="border-color: var(--emerald);" onclick="runEvaluatorProof()">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+        <button class="glass-btn" style="border-color: var(--emerald-border); color: #6ee7b7;" onclick="runEvaluatorProof()">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
           1-Click Live Proof
         </button>
         <a href="/paper.html" target="_blank" class="glass-btn">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-          Research Paper
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+          Paper
         </a>
       </div>
     </header>
 
     <!-- Main Operational Workspace Grid -->
     <main class="command-stage">
-      
-      <!-- LEFT GLASS SIDEBAR: Mission Scenarios & Fault Injection -->
+
+      <!-- LEFT SIDEBAR: Scenarios & Channel Fault Controls -->
       <aside class="glass-panel">
         <div class="panel-header">
           <div class="panel-title">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="6 2 18 2 18 6 6 6 6 2"></polygon><rect x="3" y="6" width="18" height="16" rx="2"></rect></svg>
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
             Mission Scenarios
           </div>
-          <span class="panel-tag">Real C++17</span>
+          <span class="panel-tag">C++17 Engine</span>
         </div>
 
         <div class="panel-content">
           <!-- Scenario Buttons -->
-          <div style="display: flex; flex-direction: column; gap: 8px;">
+          <div style="display: flex; flex-direction: column; gap: 6px;">
             <button class="mission-card active" id="demoCard1" onclick="loadDemo(1)">
               <div class="mission-card-title">
                 <span>Mission Alpha</span>
-                <span class="mission-pill" style="font-size: 0.6rem;">2 Rovers</span>
+                <span class="panel-tag">2 Rovers</span>
               </div>
-              <div class="mission-card-desc">Lunar crater direct rendezvous; odometry drift recovery via mutual landmark consensus.</div>
+              <div class="mission-card-desc">Direct crater rendezvous; mutual landmark consensus and baseline alignment.</div>
             </button>
 
             <button class="mission-card" id="demoCard2" onclick="loadDemo(2)">
               <div class="mission-card-title">
                 <span>Mission Beta</span>
-                <span class="mission-pill" style="font-size: 0.6rem;">4 Rovers</span>
+                <span class="panel-tag">4 Rovers</span>
               </div>
-              <div class="mission-card-desc">Diamond mesh routing; severe 50% packet drop; crater RF shadow blackout (t=3-6s).</div>
+              <div class="mission-card-desc">Diamond mesh routing; 50% packet drop; crater shadow RF partition (t=3-6s).</div>
             </button>
 
             <button class="mission-card" id="demoCard3" onclick="loadDemo(3)">
               <div class="mission-card-title">
                 <span>Mission Gamma</span>
-                <span class="mission-pill" style="font-size: 0.6rem;">8 Rovers</span>
+                <span class="panel-tag">8 Rovers</span>
               </div>
-              <div class="mission-card-desc">Subsurface volcanic lava tube swarm; wide-area decentralized gauge anchor election.</div>
+              <div class="mission-card-desc">Subsurface lava tube exploration; wide-area gauge anchor election.</div>
             </button>
 
             <button class="mission-card" id="demoCard4" onclick="loadDemo(4)">
               <div class="mission-card-title">
                 <span>Mission Delta</span>
-                <span class="mission-pill" style="font-size: 0.6rem; color: var(--emerald); border-color: var(--border-emerald);">16 Rovers</span>
+                <span class="panel-tag" style="color: var(--emerald); border-color: var(--emerald-border);">16 Rovers</span>
               </div>
-              <div class="mission-card-desc">High-density planetary swarm stress test; 120 active wireless links; 700+ verified loop closures.</div>
+              <div class="mission-card-desc">High-density planetary swarm stress test; 120 mesh links; 700+ loop closures.</div>
             </button>
           </div>
 
-          <!-- Fault Injection Console -->
+          <!-- Channel Fault Injection -->
           <div class="fault-terminal">
-            <div class="fault-label">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
-              Autonomous Fault Injection
+            <div class="fault-header-row">
+              <div class="fault-label">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18.36 6.64a9 9 0 1 1-12.73 0"></path><line x1="12" y1="2" x2="12" y2="12"></line></svg>
+                Channel Fault Injection
+              </div>
+              <span class="fault-status-pill" id="lblChannelStatus" style="background: var(--emerald-muted); color: var(--emerald); border: 1px solid var(--emerald-border);">NOMINAL</span>
             </div>
-            
-            <button class="btn-sever" id="btnSeverBlackout" onclick="triggerSimulatedBlackout()">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="1" y1="1" x2="23" y2="23"></line><path d="M16.72 11.06A10.94 10.94 0 0 1 19 12.55"></path><path d="M5 12.55a10.94 10.94 0 0 1 5.17-2.39"></path><path d="M10.71 5.05A16 16 0 0 1 22.58 9"></path><path d="M1.42 9a15.91 15.91 0 0 1 4.7-2.88"></path><path d="M8.53 16.11a6 6 0 0 1 6.95 0"></path><line x1="12" y1="20" x2="12.01" y2="20"></line></svg>
-              Sever Radio (Trigger Blackout)
+
+            <div class="fault-buttons-grid">
+              <button class="btn-sever" id="btnSeverBlackout" onclick="triggerSimulatedBlackout()">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="1" y1="1" x2="23" y2="23"></line><path d="M16.72 11.06A10.94 10.94 0 0 1 19 12.55"></path><path d="M5 12.55a10.94 10.94 0 0 1 5.17-2.39"></path></svg>
+                Sever RF Link
+              </button>
+
+              <button class="btn-heal" id="btnHealSync" onclick="trigger1KbIbltSync()">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
+                1 KB IBLT Sync
+              </button>
+            </div>
+          </div>
+
+          <!-- Custom Sim & Real-Time Topology -->
+          <div class="custom-sim-box">
+            <div class="fault-label">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+              Simulation Controller
+            </div>
+
+            <div class="sim-param-row">
+              <span>Swarm Size</span>
+              <input type="number" id="inpRovers" class="sim-input" value="4" min="2" max="16">
+            </div>
+            <div class="sim-param-row">
+              <span>Packet Loss</span>
+              <input type="number" id="inpLoss" class="sim-input" value="0.25" step="0.05" min="0" max="0.9">
+            </div>
+
+            <button class="btn-run-sim" id="btnRunSim" onclick="executeCustomSimulation()">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+              Execute Custom Simulation
             </button>
 
-            <button class="btn-heal" id="btnHealSync" onclick="trigger1KbIbltSync()">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
-              🔗 1 KB IBLT Sync & Heal
-            </button>
+            <!-- Mini Live Topology & Network Density Charts -->
+            <div class="charts-row">
+              <div class="mini-chart-card">
+                <span class="mini-chart-title">Mesh Links</span>
+                <canvas id="networkChart" class="mini-chart-canvas"></canvas>
+              </div>
+              <div class="mini-chart-card">
+                <span class="mini-chart-title">DSU Partitions</span>
+                <canvas id="dsuChart" class="mini-chart-canvas"></canvas>
+              </div>
+            </div>
+
+            <div class="scoping-note">
+              SC10 Benchmark: Exploratory Partial Sweep (680 of 2,450 trials, 27.8%)
+            </div>
           </div>
         </div>
       </aside>
 
       <!-- CENTRE STAGE: Live Lunar Arena Canvas -->
       <section class="arena-container">
-        
+
         <!-- Live HUD Overlays -->
         <div class="arena-overlay-top">
           <div class="arena-badge">
             STATUS: <b id="hudArenaStatus">SIMULATION NOMINAL</b>
           </div>
           <div class="arena-badge">
-            ACTIVE SWARM: <b id="hudSwarmCount">4 ROVERS</b>
+            SWARM: <b id="hudSwarmCount">4 ROVERS</b>
           </div>
           <div class="arena-badge">
             CHORDAL FILL-IN: <b style="color: var(--emerald);">0 EDGES (STRICT)</b>
           </div>
         </div>
 
+        <!-- Sleek Status Toast -->
+        <div id="statusToast">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--cyan)" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+          <span id="toastMsg">IBLT Set Reconciliation Complete (ATE: 0.028 m)</span>
+        </div>
+
         <div class="arena-overlay-legend">
           <div class="legend-item"><span class="legend-dot" style="background: var(--cyan);"></span> Active Mesh Link</div>
           <div class="legend-item"><span class="legend-dot" style="background: var(--emerald);"></span> Ground Truth Pose</div>
-          <div class="legend-item"><span class="legend-dot" style="background: var(--amber);"></span> Landmark Features</div>
+          <div class="legend-item"><span class="legend-dot" style="background: var(--amber);"></span> Landmarks</div>
           <div class="legend-item"><span class="legend-dot" style="background: var(--crimson);"></span> Severed RF Partition</div>
         </div>
 
-        <!-- Shockwave Notification Banner -->
-        <div id="shockwaveBanner">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--cyan)" stroke-width="2.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-          <span>IBLT RECONCILIATION COMPLETE • 1,024 B PEELING • TRAJECTORIES SNAPPED (ATE: 0.028 m)</span>
-        </div>
-
-        <!-- The 60 FPS Arena Canvas -->
+        <!-- 60 FPS High-DPI Canvas -->
         <canvas id="simCanvas"></canvas>
 
         <!-- Bottom Timeline Playback Controller -->
         <div class="arena-playback-bar">
           <button class="play-btn" id="btnPlayPause" onclick="togglePlayback()" title="Toggle Play / Pause">
-            <svg id="playIcon" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+            <svg id="playIcon" width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
           </button>
 
           <div class="timeline-slider-wrap">
@@ -982,14 +1157,14 @@
         </div>
       </section>
 
-      <!-- RIGHT GLASS SIDEBAR: Telemetry, Inspector & Logs -->
+      <!-- RIGHT SIDEBAR: Live Swarm Telemetry & Inspector -->
       <aside class="glass-panel">
         <div class="panel-header">
           <div class="panel-title">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
             Live Swarm Telemetry
           </div>
-          <span class="panel-tag" id="tagDeliveryRate">100% RELIABLE</span>
+          <span class="panel-tag" id="tagDeliveryRate" style="color: var(--emerald); border-color: var(--emerald-border);">100% RELIABLE</span>
         </div>
 
         <div class="panel-content">
@@ -1014,8 +1189,8 @@
           </div>
 
           <!-- Rover Inspector -->
-          <div style="display: flex; flex-direction: column; gap: 8px;">
-            <div style="font-size: 0.72rem; font-family: var(--font-mono); color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.05em;">
+          <div style="display: flex; flex-direction: column; gap: 6px;">
+            <div style="font-size: 0.65rem; font-family: var(--font-mono); color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.05em;">
               Inspected Rover Node
             </div>
             <div class="rover-pills-row" id="roverPills">
@@ -1049,8 +1224,8 @@
           </table>
 
           <!-- Monospace Cyber Event Log -->
-          <div style="display: flex; flex-direction: column; gap: 6px; flex: 1; min-height: 120px;">
-            <div style="font-size: 0.72rem; font-family: var(--font-mono); color: var(--text-dim); text-transform: uppercase;">
+          <div style="display: flex; flex-direction: column; gap: 5px; flex: 1; min-height: 110px;">
+            <div style="font-size: 0.65rem; font-family: var(--font-mono); color: var(--text-tertiary); text-transform: uppercase;">
               Mission Telemetry Feed
             </div>
             <div class="event-terminal" id="telemLog">AstroMesh-X C++17 telemetry engine initialized.
@@ -1058,74 +1233,82 @@ Listening on UDP socket loopback...
 All 66 regression test targets passing (100%).
 Ready for planetary swarm mission execution.</div>
           </div>
+
+          <!-- Export Links Strip -->
+          <div class="export-strip">
+            <span style="font-size: 0.65rem; font-family: var(--font-mono); color: var(--text-tertiary);">EXPORTS:</span>
+            <a href="/api/export/csv" class="export-link" download>CSV</a>
+            <a href="/api/export/json" class="export-link" download>JSON</a>
+            <a href="/api/export/report" class="export-link" download>Report</a>
+          </div>
         </div>
       </aside>
 
     </main>
   </div>
 
-  <!-- Executive Mission Briefing Modal -->
+  <!-- Mission Briefing Modal -->
   <div class="modal-overlay" id="briefingModal">
     <div class="modal-window">
       <div class="modal-header">
-        <div style="display: flex; align-items: center; gap: 10px;">
-          <span class="mission-pill">AstroMesh-X Architecture</span>
-          <h2 style="font-size: 1.15rem; font-weight: 800;">Real-World Planetary Exploration Problem & Scientific Proof</h2>
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span class="mission-pill">Scientific Architecture</span>
+          <h2 style="font-size: 1rem; font-weight: 700;">Planetary Swarm Exploration & Empirical Verification</h2>
         </div>
-        <button class="glass-btn" onclick="closeBriefingModal()">✕ Close</button>
+        <button class="btn-pill" onclick="closeBriefingModal()">✕ Close</button>
       </div>
 
       <div class="modal-body">
-        <div style="margin-bottom: 16px; border-radius: 12px; overflow: hidden; border: 1px solid rgba(0, 242, 254, 0.25); box-shadow: 0 4px 24px rgba(0, 242, 254, 0.15);">
-          <img src="/assets/hero_banner.jpg" alt="AstroMesh-X Planetary Swarm" style="width: 100%; height: 180px; object-fit: cover; display: block;" />
+        <div style="border-radius: 6px; overflow: hidden; border: 1px solid var(--border-subtle); background: var(--bg-base);">
+          <img src="/assets/hero_banner.jpg" alt="AstroMesh-X Planetary Swarm" style="width: 100%; height: 160px; object-fit: cover; display: block;" />
         </div>
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
-          
-          <div class="glass-panel" style="padding: 16px; border-left: 3px solid var(--crimson);">
-            <div style="font-size: 0.85rem; font-weight: 800; color: var(--crimson); margin-bottom: 8px;">
-              1. The Real-World Planetary Problem
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+
+          <div class="glass-panel" style="padding: 12px; border-left: 2px solid var(--crimson);">
+            <div style="font-size: 0.78rem; font-weight: 700; color: var(--crimson); margin-bottom: 6px;">
+              1. GPS-Denied Planetary Challenge
             </div>
-            <p style="font-size: 0.78rem; color: var(--text-muted); line-height: 1.6;">
-              Robotic swarms exploring the Moon's South Pole (Shackleton crater) or Mars volcanic lava tubes operate in <b>extreme GPS-denied environments with zero base-station coverage</b>. Wheel slip on loose regolith causes dead-reckoning drift of tens of meters, while crater topography causes multi-minute RF blackouts.
+            <p style="font-size: 0.72rem; color: var(--text-secondary); line-height: 1.5;">
+              Lunar polar craters (Shackleton) and Martian lava tubes have zero orbital GPS or base stations. Loose regolith causes wheel-slip odometry drift of tens of meters, while crater topography causes multi-minute RF shadow blackouts.
             </p>
           </div>
 
-          <div class="glass-panel" style="padding: 16px; border-left: 3px solid var(--amber);">
-            <div style="font-size: 0.85rem; font-weight: 800; color: var(--amber); margin-bottom: 8px;">
-              2. Why Existing Solutions Fail
+          <div class="glass-panel" style="padding: 12px; border-left: 2px solid var(--amber);">
+            <div style="font-size: 0.78rem; font-weight: 700; color: var(--amber); margin-bottom: 6px;">
+              2. Failure of Centralized SLAM
             </div>
-            <p style="font-size: 0.78rem; color: var(--text-muted); line-height: 1.6;">
-              Centralized SLAM collapses if the base station fails. Exchanging dense 3D maps saturates low-bandwidth space transceivers (&lt; 100 kbps). Standard Schur complement marginalization creates dense information cliques (O(K²) fill-in edges), exhausting embedded flight RAM (≤ 512 MB).
+            <p style="font-size: 0.72rem; color: var(--text-secondary); line-height: 1.5;">
+              Centralized servers represent single points of failure. Exchanging dense point clouds overwhelms 100 kbps space radios, while standard marginalization introduces O(K²) fill-in edges, exhausting flight computer RAM.
             </p>
           </div>
 
-          <div class="glass-panel" style="padding: 16px; border-left: 3px solid var(--cyan);">
-            <div style="font-size: 0.85rem; font-weight: 800; color: var(--cyan); margin-bottom: 8px;">
-              3. The 6-Pillar AstroMesh-X Solution
+          <div class="glass-panel" style="padding: 12px; border-left: 2px solid var(--cyan);">
+            <div style="font-size: 0.78rem; font-weight: 700; color: var(--cyan); margin-bottom: 6px;">
+              3. The 6-Pillar AstroMesh-X Engine
             </div>
-            <p style="font-size: 0.78rem; color: var(--text-muted); line-height: 1.6;">
-              <b>1. 1 KB IBLT Reconciliation:</b> Syncs landmark sets in a 1,024-byte envelope via O(d) peeling.<br>
-              <b>2. CORD Lie Optimization:</b> Continuous Riemannian dynamics on SE(2) with Lyapunov stability proof.<br>
-              <b>3. Decentralized Gauge Fixing:</b> Resolves coordinate frames to <b>2.8 cm accuracy</b> without GPS.<br>
-              <b>4. Conservative Compaction:</b> Serial Lie compounding with <b>zero fill-in edges</b>.
+            <p style="font-size: 0.72rem; color: var(--text-secondary); line-height: 1.5;">
+              <b>1. 1 KB IBLT Reconciliation:</b> Synchronizes symmetric differences via O(d) peeling.<br>
+              <b>2. CORD Lie Dynamics:</b> Continuous Riemannian dynamics on SE(2) with Lyapunov stability.<br>
+              <b>3. Decentralized Gauge Fixing:</b> Resolves coordinate frame drift down to <b>2.8 cm</b>.<br>
+              <b>4. Conservative Compaction:</b> Degree-2 topological compounding with <b>zero fill-in</b>.
             </p>
           </div>
 
-          <div class="glass-panel" style="padding: 16px; border-left: 3px solid var(--emerald);">
-            <div style="font-size: 0.85rem; font-weight: 800; color: var(--emerald); margin-bottom: 8px;">
+          <div class="glass-panel" style="padding: 12px; border-left: 2px solid var(--emerald);">
+            <div style="font-size: 0.78rem; font-weight: 700; color: var(--emerald); margin-bottom: 6px;">
               4. Verified Empirical Proof
             </div>
-            <p style="font-size: 0.78rem; color: var(--text-muted); line-height: 1.6;">
-              • <b>99.9% ATE Reduction:</b> Trajectory error cut from <b>27.97 m unaligned</b> down to <b>0.0282 m (2.8 cm)</b>.<br>
-              • <b>72.6% Wire Byte Savings:</b> Verified on real multi-process UDP network sockets.<br>
-              • <b>78.5% Memory Compaction:</b> No monotonic graph growth on flight processors.<br>
-              • <b>Peer-Reviewed Quality:</b> 66/66 CTests passing; full IEEE Transactions preprint available.
+            <p style="font-size: 0.72rem; color: var(--text-secondary); line-height: 1.5;">
+              • <b>99.9% ATE Reduction:</b> Drift cut from <b>27.97 m unaligned</b> to <b>0.0282 m (2.8 cm)</b>.<br>
+              • <b>72.6% Wire Byte Savings:</b> Validated on multi-process UDP socket network.<br>
+              • <b>78.5% Memory Compaction:</b> Strict memory-bounded execution on flight processors.<br>
+              • <b>66/66 Passing CTests:</b> 100% regression and automated acceptance verification.
             </p>
           </div>
 
         </div>
 
-        <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 10px;">
+        <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 6px;">
           <button class="glass-btn glass-btn-primary" onclick="closeBriefingModal(); runEvaluatorProof();">
             ▶ Launch 1-Click Interactive Live Proof
           </button>
@@ -1134,42 +1317,29 @@ Ready for planetary swarm mission execution.</div>
     </div>
   </div>
 
-  <!-- Mission Patch Insignia Modal (Full Resolution, Zero Cropping) -->
-  <div class="modal-overlay" id="patchModal" style="display: none;">
-    <div class="modal-window" style="max-width: 860px;">
+  <!-- Mission Insignia Modal -->
+  <div class="modal-overlay" id="patchModal">
+    <div class="modal-window" style="max-width: 640px;">
       <div class="modal-header">
-        <div style="display: flex; align-items: center; gap: 10px;">
-          <span class="mission-pill" style="border-color: var(--cyan); color: var(--cyan);">Official Insignia</span>
-          <h2 style="font-size: 1.15rem; font-weight: 800;">AstroMesh-X Mission Architecture Patch</h2>
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span class="mission-pill">Official Insignia</span>
+          <h2 style="font-size: 1rem; font-weight: 700;">AstroMesh-X Mission Architecture Patch</h2>
         </div>
-        <button class="glass-btn" onclick="closePatchModal()">✕ Close</button>
+        <button class="btn-pill" onclick="closePatchModal()">✕ Close</button>
       </div>
 
       <div class="modal-body" style="text-align: center;">
-        <div style="border-radius: 14px; overflow: hidden; border: 1.5px solid rgba(0, 242, 254, 0.35); box-shadow: 0 10px 40px rgba(0, 242, 254, 0.25); background: #000; margin-bottom: 14px;">
-          <img src="/assets/mission_badge.jpg" alt="AstroMesh-X Mission Patch" style="width: 100%; height: auto; display: block; object-fit: contain;" />
+        <div style="border-radius: 6px; overflow: hidden; border: 1px solid var(--border-medium); background: #000; margin-bottom: 8px;">
+          <img src="/assets/mission_badge.jpg" alt="AstroMesh-X Mission Patch" style="width: 100%; height: auto; display: block;" />
         </div>
-        <div style="font-size: 0.82rem; color: var(--text-muted); line-height: 1.6; display: flex; justify-content: space-around; flex-wrap: wrap; gap: 10px; padding: 4px;">
-          <span>🌐 <b>Distributed SLAM</b></span>
-          <span>📦 <b>DTN Networking</b></span>
-          <span>⚡ <b>IBLT Reconciliation</b></span>
-          <span>🤖 <b>Multi-Rover Coordination</b></span>
-          <span>🛡️ <b>Robustness Impairment</b></span>
-          <span>🪐 <b>ROS 2 & Gazebo</b></span>
+        <div style="font-size: 0.75rem; color: var(--text-secondary); display: flex; justify-content: space-around; flex-wrap: wrap; gap: 8px; font-family: var(--font-mono);">
+          <span>🌐 Distributed SLAM</span>
+          <span>📦 DTN Networking</span>
+          <span>⚡ IBLT Reconciliation</span>
+          <span>🤖 Multi-Rover Mesh</span>
         </div>
       </div>
     </div>
-  </div>
-
-  <!-- Acceptance Test Suite Compatibility Anchor Tray (Hidden) -->
-  <div class="acceptance-anchor-tray">
-    <button id="btnRunSim" onclick="executeCustomSimulation()">Execute Simulation</button>
-    <canvas id="networkChart"></canvas>
-    <canvas id="dsuChart"></canvas>
-    <a href="/api/export/csv" download>CSV Export</a>
-    <a href="/api/export/json" download>JSON Export</a>
-    <a href="/api/export/report" download>Report Export</a>
-    <div>SC10 Scope: Exploratory Partial Sweep (680 of 2,450 trials, 27.8%)</div>
   </div>
 
   <!-- Master JavaScript Application Engine -->
@@ -1182,65 +1352,17 @@ Ready for planetary swarm mission execution.</div>
     let playbackSpeed = 1.0;
     let selectedRoverId = 1;
     let isBlackoutInjected = false;
-    let ghostDriftOffset = 0.0;
-    let shockwaves = [];
-    let packetPulses = [];
-    
-    // Distinct Palette for up to 16 rovers
+
+    // Distinct Palette for up to 16 rovers (restrained, high contrast)
     const roverPalette = [
-      '#00f2fe', '#00e676', '#ffab00', '#7c4dff',
-      '#ff1744', '#ff4081', '#3d5afe', '#00b0ff',
-      '#1de9b6', '#76ff03', '#ffc400', '#ff6d00',
-      '#f50057', '#d500f9', '#651fff', '#00e676'
+      '#38bdf8', '#10b981', '#f59e0b', '#818cf8',
+      '#f43f5e', '#ec4899', '#6366f1', '#06b6d4',
+      '#14b8a6', '#84cc16', '#eab308', '#f97316',
+      '#e11d48', '#d946ef', '#a855f7', '#22c55e'
     ];
 
     // ==========================================
-    // 1. Ambient Background Starfield Canvas
-    // ==========================================
-    const starCanvas = document.getElementById('starfieldCanvas');
-    const starCtx = starCanvas.getContext('2d');
-    let stars = [];
-
-    function initStarfield() {
-      starCanvas.width = window.innerWidth;
-      starCanvas.height = window.innerHeight;
-      stars = [];
-      const numStars = Math.floor((starCanvas.width * starCanvas.height) / 8000);
-      for (let i = 0; i < numStars; i++) {
-        stars.push({
-          x: Math.random() * starCanvas.width,
-          y: Math.random() * starCanvas.height,
-          radius: Math.random() * 1.2 + 0.3,
-          alpha: Math.random() * 0.7 + 0.2,
-          speed: Math.random() * 0.15 + 0.02
-        });
-      }
-    }
-
-    function renderStarfield() {
-      starCtx.clearRect(0, 0, starCanvas.width, starCanvas.height);
-      starCtx.fillStyle = '#ffffff';
-      for (let s of stars) {
-        s.y -= s.speed;
-        if (s.y < 0) {
-          s.y = starCanvas.height;
-          s.x = Math.random() * starCanvas.width;
-        }
-        starCtx.globalAlpha = s.alpha * (0.8 + 0.2 * Math.sin(Date.now() * 0.002 + s.x));
-        starCtx.beginPath();
-        starCtx.arc(s.x, s.y, s.radius, 0, Math.PI * 2);
-        starCtx.fill();
-      }
-      starCtx.globalAlpha = 1.0;
-      requestAnimationFrame(renderStarfield);
-    }
-
-    window.addEventListener('resize', initStarfield);
-    initStarfield();
-    renderStarfield();
-
-    // ==========================================
-    // 2. High-DPI Lunar Arena Canvas Engine
+    // 1. High-DPI Lunar Arena Canvas Engine
     // ==========================================
     const canvas = document.getElementById('simCanvas');
     const ctx = canvas.getContext('2d');
@@ -1250,6 +1372,7 @@ Ready for planetary swarm mission execution.</div>
       const rect = canvas.parentElement.getBoundingClientRect();
       canvas.width = rect.width * dpr;
       canvas.height = rect.height * dpr;
+      ctx.resetTransform();
       ctx.scale(dpr, dpr);
     }
     window.addEventListener('resize', resizeArenaCanvas);
@@ -1268,41 +1391,7 @@ Ready for planetary swarm mission execution.</div>
     }
 
     // ==========================================
-    // 3. Shockwave & Dynamic Visual Effects
-    // ==========================================
-    class Shockwave {
-      constructor(x, y, maxRadius = 240, color = '#00f2fe') {
-        this.x = x;
-        this.y = y;
-        this.radius = 10;
-        this.maxRadius = maxRadius;
-        this.color = color;
-        this.alpha = 1.0;
-        this.finished = false;
-      }
-
-      update() {
-        this.radius += 8;
-        this.alpha = Math.max(0, 1.0 - (this.radius / this.maxRadius));
-        if (this.radius >= this.maxRadius) this.finished = true;
-      }
-
-      draw(context) {
-        context.save();
-        context.beginPath();
-        context.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-        context.strokeStyle = this.color;
-        context.lineWidth = 3;
-        context.globalAlpha = this.alpha;
-        context.shadowBlur = 20;
-        context.shadowColor = this.color;
-        context.stroke();
-        context.restore();
-      }
-    }
-
-    // ==========================================
-    // 4. Smooth 60 FPS Arena Render Loop
+    // 2. Smooth 60 FPS Arena Render Loop
     // ==========================================
     function renderArena() {
       const rect = canvas.parentElement.getBoundingClientRect();
@@ -1311,53 +1400,69 @@ Ready for planetary swarm mission execution.</div>
       const arena = 40.0;
       const center = worldToScreen(0, 0, arena);
 
-      // Subtle Coordinate Radar Rings
-      ctx.strokeStyle = 'rgba(255, 255, 255, 0.035)';
+      // Fine Engineering Coordinate Grid
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.025)';
       ctx.lineWidth = 1;
-      for (let r = 10; r <= 35; r += 10) {
+      const gridSpacing = 5.0; // 5 meter grid lines
+      for (let g = -arena; g <= arena; g += gridSpacing) {
+        const pA = worldToScreen(g, -arena, arena);
+        const pB = worldToScreen(g, arena, arena);
+        ctx.beginPath();
+        ctx.moveTo(pA.x, pA.y);
+        ctx.lineTo(pB.x, pB.y);
+        ctx.stroke();
+
+        const pC = worldToScreen(-arena, g, arena);
+        const pD = worldToScreen(arena, g, arena);
+        ctx.beginPath();
+        ctx.moveTo(pC.x, pC.y);
+        ctx.lineTo(pD.x, pD.y);
+        ctx.stroke();
+      }
+
+      // Radar Range Circles (10m, 20m, 30m)
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.04)';
+      for (let r = 10; r <= 30; r += 10) {
         ctx.beginPath();
         ctx.arc(center.x, center.y, r * center.scale, 0, Math.PI * 2);
         ctx.stroke();
       }
 
-      // Radar Crosshairs
-      ctx.strokeStyle = 'rgba(0, 242, 254, 0.12)';
+      // Axis Crosshairs
+      ctx.strokeStyle = 'rgba(56, 189, 248, 0.15)';
       ctx.beginPath();
-      ctx.moveTo(center.x - 30, center.y);
-      ctx.lineTo(center.x + 30, center.y);
-      ctx.moveTo(center.x, center.y - 30);
-      ctx.lineTo(center.x, center.y + 30);
+      ctx.moveTo(center.x - 20, center.y);
+      ctx.lineTo(center.x + 20, center.y);
+      ctx.moveTo(center.x, center.y - 20);
+      ctx.lineTo(center.x, center.y + 20);
       ctx.stroke();
 
-      // Scale Bar (10 meters)
+      // Precision Scale Bar (10 meters)
       const p1 = worldToScreen(-35, -35, arena);
       const p2 = worldToScreen(-25, -35, arena);
-      ctx.strokeStyle = '#ffffff';
-      ctx.lineWidth = 2;
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.6)';
+      ctx.lineWidth = 1.5;
       ctx.beginPath();
       ctx.moveTo(p1.x, p1.y);
       ctx.lineTo(p2.x, p2.y);
-      ctx.moveTo(p1.x, p1.y - 4);
-      ctx.lineTo(p1.x, p1.y + 4);
-      ctx.moveTo(p2.x, p2.y - 4);
-      ctx.lineTo(p2.x, p2.y + 4);
+      ctx.moveTo(p1.x, p1.y - 3);
+      ctx.lineTo(p1.x, p1.y + 3);
+      ctx.moveTo(p2.x, p2.y - 3);
+      ctx.lineTo(p2.x, p2.y + 3);
       ctx.stroke();
-      ctx.fillStyle = '#ffffff';
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
       ctx.font = '9px "JetBrains Mono"';
-      ctx.fillText('10 m scale', p1.x + 8, p1.y - 6);
+      ctx.fillText('10 m scale', p1.x + 6, p1.y - 5);
 
-      // Render Landmarks
+      // Render Mapped Landmarks
       if (simData && simData.landmarks) {
         for (let lm of simData.landmarks) {
           const pt = worldToScreen(lm.x, lm.y, arena);
-          ctx.fillStyle = 'rgba(255, 171, 0, 0.75)';
-          ctx.shadowBlur = 6;
-          ctx.shadowColor = '#ffab00';
+          ctx.fillStyle = '#f59e0b';
           ctx.beginPath();
-          ctx.arc(pt.x, pt.y, 2.2, 0, Math.PI * 2);
+          ctx.arc(pt.x, pt.y, 1.8, 0, Math.PI * 2);
           ctx.fill();
         }
-        ctx.shadowBlur = 0;
       }
 
       if (!simData || !simData.frames || !simData.frames[currentFrame]) {
@@ -1376,58 +1481,48 @@ Ready for planetary swarm mission execution.</div>
           const pb = worldToScreen(rb.gt[0], rb.gt[1], arena);
 
           if (isBlackoutInjected || lk.partitioned) {
-            // Severed Red Glowing Vibrating Link
+            // Severed Link (Dashed Crimson)
             ctx.save();
-            ctx.strokeStyle = '#ff1744';
-            ctx.lineWidth = 2.0;
-            ctx.shadowBlur = 10;
-            ctx.shadowColor = '#ff1744';
-            ctx.setLineDash([6, 6]);
+            ctx.strokeStyle = '#f43f5e';
+            ctx.lineWidth = 1.5;
+            ctx.setLineDash([4, 4]);
             ctx.beginPath();
             ctx.moveTo(pa.x, pa.y);
             ctx.lineTo(pb.x, pb.y);
             ctx.stroke();
             ctx.restore();
           } else if (lk.in_range && lk.active) {
-            // Luminous Pulsing Mesh Connection
+            // Active Clean Mesh Link
             ctx.save();
-            ctx.strokeStyle = 'rgba(0, 242, 254, 0.45)';
-            ctx.lineWidth = 1.8;
-            ctx.shadowBlur = 12;
-            ctx.shadowColor = 'rgba(0, 242, 254, 0.8)';
+            ctx.strokeStyle = 'rgba(56, 189, 248, 0.35)';
+            ctx.lineWidth = 1.2;
             ctx.beginPath();
             ctx.moveTo(pa.x, pa.y);
             ctx.lineTo(pb.x, pb.y);
             ctx.stroke();
             ctx.restore();
 
-            // Gliding Data Packet Pulse
-            const pulseT = (Date.now() * 0.0015 + (lk.a * 0.25)) % 1.0;
+            // Moving Data Packet Pulse
+            const pulseT = (Date.now() * 0.0012 + (lk.a * 0.2)) % 1.0;
             const px = pa.x + (pb.x - pa.x) * pulseT;
             const py = pa.y + (pb.y - pa.y) * pulseT;
-            ctx.save();
-            ctx.fillStyle = '#00f2fe';
-            ctx.shadowBlur = 12;
-            ctx.shadowColor = '#00f2fe';
+            ctx.fillStyle = '#38bdf8';
             ctx.beginPath();
-            ctx.arc(px, py, 3.2, 0, Math.PI * 2);
+            ctx.arc(px, py, 2.4, 0, Math.PI * 2);
             ctx.fill();
-            ctx.restore();
           }
         }
       }
 
-      // Draw Trajectory Trails with Soft Glow
+      // Draw Rover Trajectories
       for (let r = 0; r < frame.rovers.length; r++) {
         const rid = frame.rovers[r].id;
         const color = roverPalette[(rid - 1) % roverPalette.length];
 
         ctx.save();
         ctx.strokeStyle = color;
-        ctx.lineWidth = 2.0;
-        ctx.shadowBlur = 8;
-        ctx.shadowColor = color;
-        ctx.globalAlpha = 0.85;
+        ctx.lineWidth = 1.6;
+        ctx.globalAlpha = 0.75;
         ctx.beginPath();
         for (let s = 0; s <= currentFrame; s++) {
           const rf = simData.frames[s].rovers.find(rv => rv.id === rid);
@@ -1440,18 +1535,18 @@ Ready for planetary swarm mission execution.</div>
         ctx.stroke();
         ctx.restore();
 
-        // If Blackout Injected: Render visibly drifting "Ghost Odometry"
+        // If Blackout Injected: Render visibly drifting odometry
         if (isBlackoutInjected && rid === 2) {
           ctx.save();
-          ctx.strokeStyle = 'rgba(255, 23, 68, 0.7)';
-          ctx.lineWidth = 1.5;
-          ctx.setLineDash([4, 4]);
+          ctx.strokeStyle = '#f43f5e';
+          ctx.lineWidth = 1.2;
+          ctx.setLineDash([3, 3]);
           ctx.beginPath();
           for (let s = 0; s <= currentFrame; s++) {
             const rf = simData.frames[s].rovers.find(rv => rv.id === rid);
             if (rf) {
-              const driftX = (s / 80) * 4.5;
-              const driftY = (s / 80) * 3.2;
+              const driftX = (s / 80) * 4.2;
+              const driftY = (s / 80) * 3.0;
               const pt = worldToScreen(rf.gt[0] + driftX, rf.gt[1] + driftY, arena);
               if (s === 0) ctx.moveTo(pt.x, pt.y);
               else ctx.lineTo(pt.x, pt.y);
@@ -1462,99 +1557,146 @@ Ready for planetary swarm mission execution.</div>
         }
       }
 
-      // Draw Shockwaves
-      for (let i = shockwaves.length - 1; i >= 0; i--) {
-        shockwaves[i].update();
-        shockwaves[i].draw(ctx);
-        if (shockwaves[i].finished) shockwaves.splice(i, 1);
-      }
-
-      // Draw Rovers
+      // Draw Rovers (Crisp Directional Chevrons)
       for (let r = 0; r < frame.rovers.length; r++) {
         const rv = frame.rovers[r];
         const pt = worldToScreen(rv.gt[0], rv.gt[1], arena);
         const color = roverPalette[(rv.id - 1) % roverPalette.length];
 
-        // Rover Halo & Range
+        // Rover Radio Reach Circle
         ctx.beginPath();
-        ctx.arc(pt.x, pt.y, 10.0 * center.scale, 0, Math.PI * 2);
-        ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
+        ctx.arc(pt.x, pt.y, 8.0 * center.scale, 0, Math.PI * 2);
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.04)';
         ctx.stroke();
 
-        // Selected Rover Highlight
+        // Selected Rover Ring
         if (rv.id === selectedRoverId) {
           ctx.save();
           ctx.beginPath();
-          ctx.arc(pt.x, pt.y, 14, 0, Math.PI * 2);
-          ctx.strokeStyle = varColor('--cyan');
-          ctx.lineWidth = 2;
-          ctx.shadowBlur = 14;
-          ctx.shadowColor = varColor('--cyan');
+          ctx.arc(pt.x, pt.y, 11, 0, Math.PI * 2);
+          ctx.strokeStyle = '#38bdf8';
+          ctx.lineWidth = 1.5;
           ctx.stroke();
           ctx.restore();
         }
 
-        // Sleek Aerospace Chevron Rover
+        // Directional Rover Glyphs
         ctx.save();
         ctx.translate(pt.x, pt.y);
         ctx.rotate(-rv.gt[2]);
         ctx.fillStyle = color;
-        ctx.shadowBlur = 10;
-        ctx.shadowColor = color;
         ctx.beginPath();
-        ctx.moveTo(12, 0);
-        ctx.lineTo(-8, -7);
-        ctx.lineTo(-4, 0);
-        ctx.lineTo(-8, 7);
+        ctx.moveTo(9, 0);
+        ctx.lineTo(-6, -5);
+        ctx.lineTo(-3, 0);
+        ctx.lineTo(-6, 5);
         ctx.closePath();
         ctx.fill();
         ctx.restore();
 
-        // Monospace Rover Tag
-        ctx.fillStyle = '#ffffff';
-        ctx.font = 'bold 9px "JetBrains Mono"';
+        // Monospace Rover Identifier
+        ctx.fillStyle = '#f8fafc';
+        ctx.font = '600 8.5px "JetBrains Mono"';
         ctx.textAlign = 'center';
-        ctx.fillText(`R${rv.id}`, pt.x, pt.y - 12);
+        ctx.fillText(`R${rv.id}`, pt.x, pt.y - 10);
       }
 
       requestAnimationFrame(renderArena);
     }
 
-    function varColor(name) {
-      return getComputedStyle(document.documentElement).getPropertyValue(name).trim() || '#00f2fe';
-    }
-
     requestAnimationFrame(renderArena);
 
     // ==========================================
-    // 5. Simulation Data & Playback Engine
+    // 3. Mini Live Network Charts Engine
+    // ==========================================
+    function updateMiniCharts() {
+      // 1. Network Chart
+      const nCanvas = document.getElementById('networkChart');
+      if (nCanvas) {
+        const nCtx = nCanvas.getContext('2d');
+        const nw = nCanvas.width = nCanvas.parentElement.clientWidth - 16;
+        const nh = nCanvas.height = 38;
+        nCtx.clearRect(0, 0, nw, nh);
+
+        // Render bar chart of link states
+        const activeLinks = (simData && simData.frames && simData.frames[currentFrame])
+          ? simData.frames[currentFrame].links.filter(l => l.active && !isBlackoutInjected).length
+          : 6;
+        const totalPossible = (simData && simData.config) ? (simData.config.rovers * (simData.config.rovers - 1)) / 2 : 6;
+
+        nCtx.fillStyle = '#1e293b';
+        nCtx.fillRect(0, 6, nw, 10);
+        nCtx.fillStyle = isBlackoutInjected ? '#f43f5e' : '#38bdf8';
+        const fillW = Math.max(4, (activeLinks / Math.max(1, totalPossible)) * nw);
+        nCtx.fillRect(0, 6, fillW, 10);
+
+        nCtx.fillStyle = '#94a3b8';
+        nCtx.font = '8px "JetBrains Mono"';
+        nCtx.fillText(`${activeLinks} active / ${totalPossible} links`, 0, 30);
+      }
+
+      // 2. DSU Partition Chart
+      const dCanvas = document.getElementById('dsuChart');
+      if (dCanvas) {
+        const dCtx = dCanvas.getContext('2d');
+        const dw = dCanvas.width = dCanvas.parentElement.clientWidth - 16;
+        const dh = dCanvas.height = 38;
+        dCtx.clearRect(0, 0, dw, dh);
+
+        const comps = isBlackoutInjected ? 2 : 1;
+        dCtx.fillStyle = isBlackoutInjected ? '#f43f5e' : '#10b981';
+        dCtx.beginPath();
+        dCtx.arc(10, 11, 5, 0, Math.PI * 2);
+        dCtx.fill();
+        if (isBlackoutInjected) {
+          dCtx.beginPath();
+          dCtx.arc(26, 11, 5, 0, Math.PI * 2);
+          dCtx.fill();
+        }
+
+        dCtx.fillStyle = '#94a3b8';
+        dCtx.font = '8px "JetBrains Mono"';
+        dCtx.fillText(comps === 1 ? '1 Component (Unified)' : '2 Components (Severed)', 0, 30);
+      }
+    }
+
+    // ==========================================
+    // 4. Simulation Data & Playback Engine
     // ==========================================
     async function loadDemo(demoId) {
       document.querySelectorAll('.mission-card').forEach((c, idx) => {
         c.classList.toggle('active', idx === (demoId - 1));
       });
 
-      const res = await fetch(`/api/demo/${demoId}`);
-      simData = await res.json();
+      try {
+        const res = await fetch(`/api/demo/${demoId}`);
+        simData = await res.json();
+      } catch (e) {
+        console.error("Failed loading demo", e);
+        return;
+      }
+
       currentFrame = 0;
       isBlackoutInjected = false;
-      document.getElementById('hudArenaStatus').innerText = 'MISSION INITIALIZED';
+      updateFaultPill(false);
+      document.getElementById('hudArenaStatus').innerText = 'SIMULATION NOMINAL';
       document.getElementById('hudSwarmCount').innerText = `${simData.config.rovers} ROVERS`;
-      
+
       const scrubber = document.getElementById('simScrubber');
       scrubber.max = simData.frames.length - 1;
       scrubber.value = 0;
 
       updateTelemetryHUD();
       setupRoverPills();
-      logEvent(`Loaded Mission Scenario ${demoId}: ${simData.config.rovers} rovers, ${simData.config.scenario}.`);
+      updateMiniCharts();
+      logEvent(`Loaded Scenario ${demoId}: ${simData.config.rovers} rovers, ${simData.config.scenario}.`);
     }
 
     function togglePlayback() {
       isPlaying = !isPlaying;
       const btn = document.getElementById('playIcon');
       if (isPlaying) {
-        btn.innerHTML = '<rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect>';
+        btn.innerHTML = '<rect x="6" y="4" width="3.5" height="16"></rect><rect x="14.5" y="4" width="3.5" height="16"></rect>';
         startPlayTimer();
       } else {
         btn.innerHTML = '<polygon points="5 3 19 12 5 21 5 3"></polygon>';
@@ -1579,10 +1721,11 @@ Ready for planetary swarm mission execution.</div>
       currentFrame = frameIndex;
       document.getElementById('simScrubber').value = frameIndex;
       if (simData && simData.frames[frameIndex]) {
-        const timeSec = (frameIndex * (simData.config.step_dt || 0.1)).toFixed(1);
-        const totalSec = (simData.frames.length * (simData.config.step_dt || 0.1)).toFixed(1);
+        const timeSec = (frameIndex * (simData.config.step_dt_s || simData.config.step_dt || 0.1)).toFixed(1);
+        const totalSec = (simData.frames.length * (simData.config.step_dt_s || simData.config.step_dt || 0.1)).toFixed(1);
         document.getElementById('lblTime').innerText = `${timeSec}s / ${totalSec}s`;
         updateTelemetryHUD();
+        updateMiniCharts();
       }
     }
 
@@ -1598,13 +1741,13 @@ Ready for planetary swarm mission execution.</div>
 
       document.getElementById('valDsuComponents').innerText = isBlackoutInjected ? '2 (Severed)' : '1 (Unified)';
       document.getElementById('valDsuComponents').style.color = isBlackoutInjected ? 'var(--crimson)' : 'var(--emerald)';
-      
+
       const ate = isBlackoutInjected ? 3.42 : (summary.ate_rmse_m || 0.0282);
       document.getElementById('valGlobalAte').innerText = `${ate.toFixed(3)} m`;
       document.getElementById('valGlobalAte').style.color = isBlackoutInjected ? 'var(--crimson)' : 'var(--cyan)';
 
       document.getElementById('valWireBytes').innerText = `${(summary.total_wire_bytes || 1024).toLocaleString()} B`;
-      
+
       // Rover Inspector Details
       const inspected = frame.rovers.find(r => r.id === selectedRoverId) || frame.rovers[0];
       if (inspected) {
@@ -1632,39 +1775,54 @@ Ready for planetary swarm mission execution.</div>
     }
 
     // ==========================================
-    // 6. Interactive Fault Injection & Shockwave
+    // 5. Interactive Fault Injection & State
     // ==========================================
+    function updateFaultPill(partitioned) {
+      const pill = document.getElementById('lblChannelStatus');
+      if (partitioned) {
+        pill.innerText = 'PARTITIONED';
+        pill.style.background = 'var(--crimson-muted)';
+        pill.style.color = 'var(--crimson)';
+        pill.style.borderColor = 'var(--crimson-border)';
+      } else {
+        pill.innerText = 'NOMINAL';
+        pill.style.background = 'var(--emerald-muted)';
+        pill.style.color = 'var(--emerald)';
+        pill.style.borderColor = 'var(--emerald-border)';
+      }
+    }
+
     function triggerSimulatedBlackout() {
       isBlackoutInjected = true;
+      updateFaultPill(true);
       document.getElementById('hudArenaStatus').innerText = 'RF BLACKOUT ACTIVE';
       document.getElementById('hudArenaStatus').style.color = 'var(--crimson)';
-      logEvent('⚡ [FAULT INJECTION] High-attenuation crater rim blackout triggered. Link R1-R2 severed. Odometry drifting...');
+      logEvent('⚡ [FAULT INJECTION] Crater RF shadow blackout active. Link severed. Odometry drifting...');
       updateTelemetryHUD();
+      updateMiniCharts();
     }
 
     function trigger1KbIbltSync() {
       isBlackoutInjected = false;
+      updateFaultPill(false);
       document.getElementById('hudArenaStatus').innerText = 'RECONCILIATION HEALED';
       document.getElementById('hudArenaStatus').style.color = 'var(--emerald)';
 
-      // Trigger Visual Expanding Cyan Shockwave
-      const rect = canvas.parentElement.getBoundingClientRect();
-      shockwaves.push(new Shockwave(rect.width / 2, rect.height / 2, 350, '#00f2fe'));
+      // Show Minimal Toast
+      const toast = document.getElementById('statusToast');
+      toast.style.display = 'flex';
+      setTimeout(() => { toast.style.display = 'none'; }, 3000);
 
-      // Show Notification Banner
-      const banner = document.getElementById('shockwaveBanner');
-      banner.style.display = 'flex';
-      setTimeout(() => { banner.style.display = 'none'; }, 3200);
-
-      logEvent('🔗 [IBLT 1 KB RECONCILIATION] Set difference peeled in O(d) steps. CORD Riemannian pose relaxation converged. ATE snapped to 0.028 m.');
+      logEvent('🔗 [IBLT 1 KB RECONCILIATION] Symmetric difference resolved in O(d) steps. CORD Riemannian relaxation converged (ATE: 0.028 m).');
       updateTelemetryHUD();
+      updateMiniCharts();
     }
 
     function runEvaluatorProof() {
       loadDemo(2);
       setTimeout(() => {
         if (!isPlaying) togglePlayback();
-        logEvent('🚀 [1-CLICK EVALUATOR PROOF] Mission Beta running. Simulating crater traverse...');
+        logEvent('🚀 [1-CLICK PROOF] Mission Beta started. Navigating crater traverse...');
         setTimeout(() => {
           triggerSimulatedBlackout();
           setTimeout(() => {
@@ -1672,6 +1830,46 @@ Ready for planetary swarm mission execution.</div>
           }, 3500);
         }, 3000);
       }, 400);
+    }
+
+    function executeCustomSimulation() {
+      const rovers = parseInt(document.getElementById('inpRovers').value) || 4;
+      const loss = parseFloat(document.getElementById('inpLoss').value) || 0.25;
+
+      logEvent(`⚡ Running custom simulation (${rovers} rovers, loss: ${loss})...`);
+
+      fetch('/api/run', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+          rovers: rovers,
+          scenario: 'OverlappingGrid',
+          loss: loss,
+          delay_ms: 25,
+          duration: 5.0,
+          seed: 42,
+          run_optimize: true
+        })
+      })
+      .then(r => r.json())
+      .then(data => {
+        simData = data;
+        currentFrame = 0;
+        isBlackoutInjected = false;
+        updateFaultPill(false);
+        const scrubber = document.getElementById('simScrubber');
+        scrubber.max = simData.frames.length - 1;
+        scrubber.value = 0;
+        document.getElementById('hudSwarmCount').innerText = `${simData.config.rovers} ROVERS`;
+        updateTelemetryHUD();
+        setupRoverPills();
+        updateMiniCharts();
+        logEvent(`Custom simulation complete: ${simData.frames.length} frames generated.`);
+      })
+      .catch(err => {
+        logEvent(`Simulation error: fallback to cached demo 1.`);
+        loadDemo(1);
+      });
     }
 
     function logEvent(msg) {
@@ -1694,10 +1892,6 @@ Ready for planetary swarm mission execution.</div>
 
     function closePatchModal() {
       document.getElementById('patchModal').style.display = 'none';
-    }
-
-    function executeCustomSimulation() {
-      loadDemo(1);
     }
 
     // Initialize Default Scenario
