@@ -1362,6 +1362,64 @@ Adopt Option 2. Implement the clean aerospace engineering console on feature bra
 - *Negative:*
   - Requires updating documentation and tracking changes on the new branch.
 
+---
+
+## ADR-048: Full-Stack Cloud Container Deployment with Multi-Stage Docker & Render Blueprint
+
+### Context
+AstroMesh-X requires a demonstration platform for final evaluations, research sharing, and viva defenses. Deploying purely as a static web frontend on platforms like Vercel skips live C++ simulation execution (`sim_runner`) and restricts interaction to pre-baked records. Conversely, local-only execution limits visibility to in-person demonstrations on the host machine. To achieve true cloud availability where the native C++ SLAM engine executes on-the-fly without skipping any component, a containerized deployment architecture is required.
+
+### Options Considered
+1. **Static Frontend on Vercel:** Instant deployment, but skips live C++ subprocesses and serverless timeouts prevent long-running simulations.
+2. **Virtual Machine (AWS EC2 / DigitalOcean Droplet):** Full control, but requires continuous billing and manual infrastructure maintenance.
+3. **Multi-Stage Docker Container with Render.com Blueprint (Selected):**
+   - Stage 1 (`ubuntu:22.04`): Compiles the C++20 `sim_runner` executable using CMake and Ninja in Release mode with static POSIX runtime linking.
+   - Stage 2 (`python:3.11-slim`): Minimal runtime container with `libstdc++6` and Python standard library/pandas, serving the Mission Control dashboard and executing the C++ binary via `/api/run`.
+   - `render.yaml`: Blueprint specification enabling one-click deployment from GitHub to Render.com's free container tier.
+   - Dynamic binary resolution in `app/server.py` supporting both Windows MinGW (`sim_runner.exe`) and Linux POSIX (`sim_runner`).
+
+### Decision
+Adopt Option 3. Implement `Dockerfile`, `docker-compose.yml`, `render.yaml`, and update `app/server.py` with cross-platform binary resolution and `0.0.0.0` host binding.
+
+### Consequences
+- *Positive:*
+  - 100% full-stack capability in the cloud: live C++ SLAM simulations, parameter sweeps, fault injection, and paper delivery.
+  - Zero skips: Evaluators can trigger arbitrary rover scenarios on the public URL and receive real-time C++ computed results.
+  - Fully cross-platform: Runs locally on Windows native, locally in Docker, or hosted on Render/Railway/Fly.io.
+  - Zero financial cost on Render's free tier.
+- *Negative:*
+  - Initial cold start on Render free tier takes ~30-40 seconds if the container has spun down due to inactivity.
+
+---
+
+## ADR-049: Aerospace Mission Operations Console UI Alignment (Image 2 Design)
+
+### Context
+During evaluation preparations and viva defense review, the interactive dashboard (`app/static/index.html`) was assessed for visual hierarchy, state affordance, and dark-mode ergonomics. The initial interface suffered from "ghost button overuse" where interactive controls (`Execute Custom Simulation`, `R1` selector, playback button) used low-contrast dark outlines that blended into the canvas. Additionally, active scenario indication lacked immediate visual confirmation, and sensor perception area was not explicitly modeled on the radar canvas.
+
+### Options Considered
+1. **Maintain Existing Baseline UI:** Functionally complete, but visually flat with ambiguous active states and low action affordance under dim examination room lighting.
+2. **Restyle to Match Image 2 Aerospace Flight Console (Selected):**
+   - Shift base palette to deep space midnight `#030712` with electric cyan `#00f0ff` accents.
+   - Establish a 3-tier visual hierarchy: primary actions (solid cyan fill, dark typography), secondary actions (outlined crimson/cyan), and passive telemetry cards.
+   - Introduce an angular diagonal `ACTIVE` corner ribbon on the active scenario card.
+   - Implement solid cyan tab selection semantics for the inspected rover node (`R1`) and media playback control.
+   - Enhance the HTML5 radar canvas with polar range circles (`10m` to `40m`), cardinal compass markings (`000°` to `270°`), and a luminous $128.0^\circ$ sensor Field of View (FOV) sector cone with a radial gradient.
+   - Incorporate deep-space telemetry framing (`DSN: GOLDSTONE DSS-14 LOCK`, `CCSDS TM: SYNC_OK`, `MIL-STD-1553B`, live ticking UTC and MET counters).
+
+### Decision
+Adopt Option 2. Refactor `app/static/index.html` strictly within the presentation layer, leaving C++ simulation execution, mathematical algorithms, telemetry schemas, and scientific data 100% unaltered.
+
+### Consequences
+- *Positive:*
+  - Professional, flight-ready visual aesthetics suitable for viva defense and peer review.
+  - Immediate situational awareness: examiners and users can identify active scenarios and selected rovers at a glance.
+  - High WCAG contrast for primary controls in dark mode.
+  - Zero disruption to existing C++ algorithms, benchmark metrics, or API contracts.
+- *Negative:*
+  - None. Changes are self-contained within `app/static/index.html`.
+
+
 
 
 

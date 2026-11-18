@@ -18,8 +18,27 @@ from pathlib import Path
 # Paths
 BASE_DIR = Path(__file__).resolve().parent.parent
 STATIC_DIR = Path(__file__).resolve().parent / "static"
-SIM_RUNNER_EXE = BASE_DIR / "build-ucrt64-clean" / "bin" / "sim_runner.exe"
 SCRATCH_DIR = BASE_DIR / "scratch"
+
+def _resolve_sim_runner() -> Path:
+    """Dynamically resolves sim_runner binary across Windows, Linux, and Docker."""
+    env_path = os.environ.get("ASTROMESH_SIM_RUNNER")
+    if env_path and Path(env_path).exists():
+        return Path(env_path)
+    candidates = [
+        BASE_DIR / "bin" / "sim_runner",
+        BASE_DIR / "build" / "bin" / "sim_runner",
+        BASE_DIR / "build" / "sim_runner",
+        BASE_DIR / "build-ucrt64-clean" / "bin" / "sim_runner.exe",
+        BASE_DIR / "build" / "bin" / "sim_runner.exe",
+        BASE_DIR / "build-ucrt64" / "bin" / "sim_runner.exe",
+    ]
+    for c in candidates:
+        if c.exists():
+            return c
+    return BASE_DIR / "build-ucrt64-clean" / "bin" / "sim_runner.exe" if os.name == "nt" else BASE_DIR / "bin" / "sim_runner"
+
+SIM_RUNNER_EXE = _resolve_sim_runner()
 
 if str(BASE_DIR) not in sys.path:
     sys.path.insert(0, str(BASE_DIR))
@@ -442,16 +461,17 @@ class AstroMeshHandler(http.server.SimpleHTTPRequestHandler):
 
 
 def main():
+    host = os.environ.get("HOST", "0.0.0.0")
     port = int(os.environ.get("PORT", 8765))
     print(f"=================================================================")
     print(f"        ASTRAMESH-X INTERACTIVE MISSION CONTROL BACKEND          ")
     print(f"=================================================================")
     print(f"Server Root:    {STATIC_DIR}")
-    print(f"C++ Sim Engine: {SIM_RUNNER_EXE}")
-    print(f"Listening on:   http://127.0.0.1:{port}")
+    print(f"C++ Sim Engine: {SIM_RUNNER_EXE} (available: {SIM_RUNNER_EXE.exists()})")
+    print(f"Listening on:   http://{host}:{port}")
     print(f"-----------------------------------------------------------------")
     
-    server_address = ("127.0.0.1", port)
+    server_address = (host, port)
     httpd = http.server.ThreadingHTTPServer(server_address, AstroMeshHandler)
     
     # Pre-warm benchmark cache

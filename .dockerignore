@@ -1,0 +1,28 @@
+# Git & IDE
+.git
+.github
+.vscode
+.gemini
+
+# Local Windows build directories
+build/
+build-ucrt64/
+build-ucrt64-clean/
+bin/*.exe
+
+# Compiled object and archive files
+*.obj
+*.o
+*.a
+*.exe
+*.dll
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Temporary or backup files
+*.bak
+*.tmp
+app/static/index.html.bak
